@@ -71,4 +71,71 @@ class ExtractTest extends TestCase
 
         $this->assertNull($result['error']);
     }
+
+    public function testExtractMusic()
+    {
+        $search = new \Hooshid\MetacriticScraper\Metacritic();
+        $result = $search->extract('/music/happier-than-ever/billie-eilish');
+        $this->assertIsArray($result);
+        $this->assertCount(14, $result['result']);
+
+        $this->assertEquals('https://www.metacritic.com/music/happier-than-ever/billie-eilish', $result['result']['full_url']);
+        $this->assertEquals('/music/happier-than-ever/billie-eilish', $result['result']['url']);
+        $this->assertEquals('billie-eilish', $result['result']['url_slug']);
+        $this->assertEquals('Happier than Ever', $result['result']['title']);
+        $this->assertEquals('https://static.metacritic.com/images/products/music/4/35acaa79ec2e95dd3efa0e581a845970-98.jpg', $result['result']['thumbnail']);
+        $this->assertEquals('2021', $result['result']['release_year']);
+        $this->assertEquals('music', $result['result']['type']);
+
+        $this->assertGreaterThan(85, $result['result']['meta_score']);
+        $this->assertLessThan(90, $result['result']['meta_score']);
+        $this->assertGreaterThan(25, $result['result']['meta_votes']);
+
+        $this->assertGreaterThan(8, $result['result']['user_score']);
+        $this->assertLessThan(9, $result['result']['user_score']);
+        $this->assertGreaterThan(820, $result['result']['user_votes']);
+
+        $this->assertEquals('The second full-length studio release for the Los Angeles pop singer-songwriter was produced by her brother, Finneas.', $result['result']['summary']);
+        $this->assertEquals('117', strlen($result['result']['summary']));
+        $this->assertEquals('Pop/Rock', implode(', ', $result['result']['genres']));
+        $this->assertEquals('Billie Eilish', $result['result']['artist']);
+
+        $this->assertNull($result['error']);
+    }
+
+    public function testExtractGame()
+    {
+        $search = new \Hooshid\MetacriticScraper\Metacritic();
+        $result = $search->extract('/game/xbox-series-x/microsoft-flight-simulator');
+        $this->assertIsArray($result);
+        $this->assertCount(19, $result['result']);
+
+        $this->assertEquals('https://www.metacritic.com/game/xbox-series-x/microsoft-flight-simulator', $result['result']['full_url']);
+        $this->assertEquals('/game/xbox-series-x/microsoft-flight-simulator', $result['result']['url']);
+        $this->assertEquals('microsoft-flight-simulator', $result['result']['url_slug']);
+        $this->assertEquals('Microsoft Flight Simulator', $result['result']['title']);
+        $this->assertEquals('https://static.metacritic.com/images/products/games/7/303224e6c9979050d41e2051fc2a6b7d-98.jpg', $result['result']['thumbnail']);
+        $this->assertEquals('2021', $result['result']['release_year']);
+        $this->assertEquals('game', $result['result']['type']);
+
+        $this->assertGreaterThan(85, $result['result']['meta_score']);
+        $this->assertLessThan(95, $result['result']['meta_score']);
+        $this->assertGreaterThan(29, $result['result']['meta_votes']);
+
+        $this->assertGreaterThan(8, $result['result']['user_score']);
+        $this->assertLessThan(9, $result['result']['user_score']);
+        $this->assertGreaterThan(277, $result['result']['user_votes']);
+
+        $this->assertEquals('From light planes to wide-body jets, fly highly detailed and accurate aircraft in the next generation of Microsoft Flight Simulator. Test your piloting skills against the challenges of night flying, real-time atmospheric simulation and live weather in a dynamic and living world.', $result['result']['summary']);
+        $this->assertEquals('279', strlen($result['result']['summary']));
+        $this->assertEquals('Simulation, Flight, Civilian', implode(', ', $result['result']['genres']));
+        $this->assertEquals('Asobo Studio', implode(', ', $result['result']['developers']));
+        $this->assertEquals('Microsoft Game Studios, Microsoft, Xbox Game Studios', implode(', ', $result['result']['publishers']));
+        $this->assertIsArray($result['result']['also_on']);
+        $this->assertCount(1, $result['result']['also_on']);
+        $this->assertEquals('https://www.gamefaqs.com/console/xbox-series-x/code/265963.html', $result['result']['cheat_url']);
+        $this->assertEquals('Xbox Series X', $result['result']['platform']);
+
+        $this->assertNull($result['error']);
+    }
 }

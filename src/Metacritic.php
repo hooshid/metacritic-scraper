@@ -218,32 +218,74 @@ class Metacritic extends Base
         $response = $this->getContentPage($this->baseUrl . $url);
         $html = HtmlDomParser::str_get_html($response);
 
-        $title = $html->find('.product_page_title h1', 0)->text();
-        $thumbnail = $html->find('.summary_img', 0)->getAttribute('src');
+        // extract type
+        preg_match("/(\w+)/", $url, $typeMatch);
+        $type = $this->getType($typeMatch[1]);
+
+        // extract title
+        $title = $html->find('h1', 0)->text();
+
+        // extract thumbnail
+        if($type == "movie" or $type == "tv") {
+            $thumbnail = $html->find('.summary_img', 0)->getAttribute('src');
+        } else {
+            $thumbnail = $html->find('img.product_image', 0)->getAttribute('src');
+        }
+
         if (stripos($thumbnail, "http") === false) {
             $thumbnail = null;
         }
 
-        $releaseYear = (int)$html->find('.product_page_title .release_year', 0)->text();
-        if (empty($releaseYear)) {
-            $itemInfo = $html->find('.details_section .release_date', 0)->text();
+        // extract release year
+        if($type == "movie" or $type == "tv") {
+            $releaseYear = (int)$html->find('.product_page_title .release_year', 0)->text();
+            if (empty($releaseYear)) {
+                $itemInfo = $html->find('.details_section .release_date', 0)->text();
+                if (preg_match("/(\d{4})/", $itemInfo, $matches)) {
+                    $releaseYear = $matches[1];
+                }
+            }
+        } elseif($type == "music") {
+            $itemInfo = $html->find('.summary_detail.release .data', 0)->text();
+            if (preg_match("/(\d{4})/", $itemInfo, $matches)) {
+                $releaseYear = $matches[1];
+            }
+        } else {
+            $itemInfo = $html->find('.release_data .data', 0)->text();
             if (preg_match("/(\d{4})/", $itemInfo, $matches)) {
                 $releaseYear = $matches[1];
             }
         }
-        preg_match("/(\w+)/", $url, $type);
 
-        $metaScore = $html->find('.summary_right .metascore_w', 0)->text();
-        $metaScoreVotesCount = $html->find('.summary_left .based_on', 0)->text();
-        $mustSee = $html->findOneOrFalse('.summary_right .must-see');
-        $userScore = $html->find('.user_score_summary .metascore_w', 0)->text();
-        $userScoreVotesCount = $html->find('.user_score_summary .score_description .based_on', 0)->text();
+        // extract scores
+        if($type == "movie" or $type == "tv") {
+            $metaScore = $html->find('.summary_right .metascore_w', 0)->text();
+            $metaScoreVotesCount = $html->find('.summary_left .based_on', 0)->text();
+            $mustSee = $html->findOneOrFalse('.summary_right .must-see');
+            $userScore = $html->find('.user_score_summary .metascore_w', 0)->text();
+            $userScoreVotesCount = $html->find('.user_score_summary .score_description .based_on', 0)->text();
+        } else {
+            $metaScore = $html->find('.metascore_summary .metascore_w', 0)->text();
+            $metaScoreVotesCount = $html->find('.metascore_summary .count a span', 0)->text();
+            $mustSee = $html->findOneOrFalse('.must_play.product');
+            $userScore = $html->find('.feature_userscore .metascore_w', 0)->text();
+            $userScoreVotesCount = $html->find('.feature_userscore .count a', 0)->text();
+        }
+
+        // extract summary
+        if($type == "movie" or $type == "tv") {
         if ($html->findOneOrFalse('.summary_deck .blurb_expanded')) {
             $summary = $html->find('.summary_deck .blurb_expanded', 0)->text();
         } else {
             $summary = $html->find('.summary_deck', 0)->text();
         }
-
+        } else {
+            if ($html->findOneOrFalse('.product_summary .blurb_expanded')) {
+                $summary = $html->find('.product_summary .blurb_expanded', 0)->text();
+            } else {
+                $summary = $html->find('.product_summary .data', 0)->text();
+            }
+        }
 
         $output = [];
         $output['full_url'] = $this->baseUrl . $url;
@@ -252,23 +294,46 @@ class Metacritic extends Base
         $output['title'] = $this->cleanString($title);
         $output['thumbnail'] = $thumbnail;
         $output['release_year'] = $releaseYear;
-        $output['type'] = $this->getType($type[1]);
+        $output['type'] = $type;
         $output['meta_score'] = isset($metaScore) ? (int)$metaScore : null;
         $output['meta_votes'] = isset($metaScoreVotesCount) ? $this->getNumbers($metaScoreVotesCount) : null;
         $output['user_score'] = isset($userScore) ? (float)$userScore : null;
         $output['user_votes'] = isset($userScoreVotesCount) ? $this->getNumbers($userScoreVotesCount) : null;
-        $output['must_see'] = (bool)$mustSee;
         $output['summary'] = $this->cleanString($summary, 'Summary:');
-        $output['starring'] = $html->find('.summary_cast span a')->text();
-        if ($output['type'] == "tv") {
-            $output['director'] = $html->find('.creator a span')->text();
-        } else {
-            $output['director'] = $html->find('.director a span')->text();
-        }
-        $output['genres'] = $html->find('.genres span span')->text();
-        $output['rating'] = $this->cleanString($html->find('.rating span', 1)->text());
-        $output['runtime'] = $this->cleanString($html->find('.runtime span', 1)->text());
+        if($type == "movie" or $type == "tv") {
+            $output['must_see'] = (bool)$mustSee;
+            $output['starring'] = $html->find('.summary_cast span a')->text();
+            if ($output['type'] == "tv") {
+                $output['director'] = $html->find('.creator a span')->text();
+            } else {
+                $output['director'] = $html->find('.director a span')->text();
+            }
 
+            $output['rating'] = $this->cleanString($html->find('.rating span', 1)->text());
+            $output['runtime'] = $this->cleanString($html->find('.runtime span', 1)->text());
+        }
+
+        $output['genres'] = $html->find('.genres span span, .product_genre .data')->text();
+
+        if($type == "music") {
+            $output['artist'] = $html->find('.product_artist a span',0)->text();
+        }
+
+        if($type == "game"){
+            $output['must_play'] = (bool)$mustSee;
+            $output['developers'] = $html->find('li.developer a')->text();
+            $output['publishers'] = $html->find('li.publisher a')->text();
+
+            $i=0;
+            foreach ($html->find('li.product_platforms a') as $element) {
+                $output['also_on'][$i]['title'] = trim($element->plaintext);
+                $output['also_on'][$i]['url'] = trim($element->href);
+                $i++;
+            }
+
+            $output['cheat_url'] = $html->find('li.product_cheats a',0)->href;
+            $output['platform'] = $html->find('.product_title .platform a',0)->text();
+        }
 
         return [
             'result' => $output,

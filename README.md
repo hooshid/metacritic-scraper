@@ -15,8 +15,6 @@ see example folder
 
 ## Todo
 * add sort in search in example
-* add tests for game and music
-* add extract method for game and music (because different theme layout)
 
 ## License
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.

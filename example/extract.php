@@ -43,13 +43,14 @@ $result = $extract['result'];
                 <a href="extract.php?url=/tv/game-of-thrones">Game of Thrones</a>
                 <a href="extract.php?url=/tv/breaking-bad">Breaking Bad</a>
 
-                <!--
                 <div class="menu-links-title">Music</div>
-                <a href="browse.php?url=/browse/albums/release-date/new-releases/date">New Releases</a>
+                <a href="extract.php?url=/music/happier-than-ever/billie-eilish">Billie Eilish - Happier than Ever</a>
+                <a href="extract.php?url=/music/revival/selena-gomez">Selena Gomez - Revival</a>
+                <a href="extract.php?url=/music/when-the-sun-goes-down-2011/selena-gomez-the-scene">Selena Gomez & the Scene - When the Sun Goes Down</a>
 
                 <div class="menu-links-title">Game</div>
-                <a href="browse.php?url=/browse/games/score/metascore/year/all/filtered">Best Games This Year</a>
-                -->
+                <a href="extract.php?url=/game/xbox-series-x/microsoft-flight-simulator">Microsoft Flight Simulator - 2021</a>
+                <a href="extract.php?url=/game/switch/ender-lilies-quietus-of-the-knights">ENDER LILIES: Quietus of the Knights - 2021</a>
             </div>
 
             <div class="col-75">
@@ -103,33 +104,27 @@ $result = $extract['result'];
                         </tr>
                     <?php } ?>
 
-                    <!-- Must See or Play? -->
+                    <!-- Must See (on movie and tv) -->
+                    <?php if (isset($result['must_see'])) {?>
                     <tr>
-                        <td><b><?php if ($result['type'] == "game") {echo "Must Play?";} else {echo "Must See?";}?></b></td>
+                        <td><b>Must See?</b></td>
                         <td><?php if ($result['must_see']) {echo "Yes";} else {echo "No";}?></td>
                     </tr>
+                    <?php }?>
+
+                    <!-- Must Play (on game) -->
+                    <?php if (isset($result['must_play'])) {?>
+                    <tr>
+                        <td><b>Must Play?</b></td>
+                        <td><?php if ($result['must_play']) {echo "Yes";} else {echo "No";}?></td>
+                    </tr>
+                    <?php }?>
 
                     <!-- Summary -->
                     <?php if ($result['summary']) { ?>
                         <tr>
                             <td><b>Summary:</b></td>
                             <td><?php echo $result['summary']; ?></td>
-                        </tr>
-                    <?php } ?>
-
-                    <!-- Starring -->
-                    <?php if ($result['starring']) { ?>
-                        <tr>
-                            <td><b>Starring:</b></td>
-                            <td><?php echo implode(', ', $result['starring']); ?></td>
-                        </tr>
-                    <?php } ?>
-
-                    <!-- Director -->
-                    <?php if ($result['director']) { ?>
-                        <tr>
-                            <td><b>Director:</b></td>
-                            <td><?php echo implode(' and ', $result['director']); ?></td>
                         </tr>
                     <?php } ?>
 
@@ -141,8 +136,25 @@ $result = $extract['result'];
                         </tr>
                     <?php } ?>
 
+                    <!--------------------------------- For movie & tv --------------------------------->
+                    <!-- Starring -->
+                    <?php if(isset($result['starring']) and !empty($result['starring'])) { ?>
+                        <tr>
+                            <td><b>Starring:</b></td>
+                            <td><?php echo implode(', ', $result['starring']); ?></td>
+                        </tr>
+                    <?php } ?>
+
+                    <!-- Director -->
+                    <?php if (isset($result['director']) and !empty($result['director'])) { ?>
+                        <tr>
+                            <td><b>Director:</b></td>
+                            <td><?php echo implode(' and ', $result['director']); ?></td>
+                        </tr>
+                    <?php } ?>
+
                     <!-- Rating -->
-                    <?php if ($result['rating']) { ?>
+                    <?php if (isset($result['rating'])) { ?>
                         <tr>
                             <td><b>Rating:</b></td>
                             <td><?php echo $result['rating']; ?></td>
@@ -150,10 +162,64 @@ $result = $extract['result'];
                     <?php } ?>
 
                     <!-- Runtime -->
-                    <?php if ($result['runtime']) { ?>
+                    <?php if (isset($result['runtime'])) { ?>
                         <tr>
                             <td><b>Runtime:</b></td>
                             <td><?php echo $result['runtime']; ?></td>
+                        </tr>
+                    <?php } ?>
+
+                    <!--------------------------------- For music --------------------------------->
+                    <!-- Developers -->
+                    <?php if (isset($result['artist'])) { ?>
+                        <tr>
+                            <td><b>Artist:</b></td>
+                            <td><?php echo $result['artist']; ?></td>
+                        </tr>
+                    <?php } ?>
+
+                    <!--------------------------------- For game --------------------------------->
+                    <!-- Platform -->
+                    <?php if (isset($result['platform']) and !empty($result['platform'])) { ?>
+                        <tr>
+                            <td><b>Platform:</b></td>
+                            <td><?php echo $result['platform']; ?></td>
+                        </tr>
+                    <?php } ?>
+
+                    <!-- Developers -->
+                    <?php if (isset($result['developers']) and !empty($result['developers'])) { ?>
+                        <tr>
+                            <td><b>Developers:</b></td>
+                            <td><?php echo implode(', ', $result['developers']); ?></td>
+                        </tr>
+                    <?php } ?>
+
+                    <!-- Publishers -->
+                    <?php if (isset($result['publishers']) and !empty($result['publishers'])) { ?>
+                        <tr>
+                            <td><b>Publishers:</b></td>
+                            <td><?php echo implode(', ', $result['publishers']); ?></td>
+                        </tr>
+                    <?php } ?>
+
+                    <!-- Also on other platform -->
+                    <?php if (isset($result['also_on']) and !empty($result['also_on'])) { ?>
+                        <tr>
+                            <td><b>Also on:</b></td>
+                            <td class="menu-links">
+                                <?php foreach ($result['also_on'] as $platform) { ?>
+                                    <a href="extract.php?url=<?php echo $platform['url']; ?>"><?php echo $platform['title']; ?></a>
+                                <?php }?>
+                            </td>
+                        </tr>
+                    <?php } ?>
+
+                    <!-- Cheat Url -->
+                    <?php if (isset($result['cheat_url']) and !empty($result['cheat_url'])) { ?>
+                        <tr>
+                            <td><b>Cheat Url:</b></td>
+                            <td><?php echo $result['cheat_url']; ?></td>
                         </tr>
                     <?php } ?>
 
