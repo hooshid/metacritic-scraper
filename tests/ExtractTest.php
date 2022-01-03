@@ -28,9 +28,9 @@ class ExtractTest extends TestCase
         $this->assertGreaterThan(1700, $result['result']['user_votes']);
 
         $this->assertFalse($result['result']['must_see']);
-        $this->assertEquals('A computer hacker (Reeves) learns that his entire life has been a virtual dream, orchestrated by a strange class of computer overlords in the far future. He joins a resistance movement (led by Fishburne) to free humanity from lives of computerized brainwashing.', $result['result']['summary']);
+        $this->assertEquals('A computer hacker (Keanu Reeves) learns that his entire life has been a virtual dream, orchestrated by a strange class of computer overlords in the far future. He joins a resistance movement to free humanity from lives of computerized brainwashing.', $result['result']['summary']);
         $this->assertEquals('Carrie-Anne Moss, Keanu Reeves, Laurence Fishburne', implode(', ', $result['result']['starring']));
-        $this->assertEquals('Andy Wachowski and Lana Wachowski', implode(' and ', $result['result']['director']));
+        $this->assertEquals('Lana Wachowski and Lilly Wachowski', implode(' and ', $result['result']['director']));
         $this->assertEquals('Action, Adventure, Sci-Fi, Thriller', implode(', ', $result['result']['genres']));
         $this->assertEquals('R', $result['result']['rating']);
         $this->assertEquals('136 min', $result['result']['runtime']);
@@ -114,7 +114,7 @@ class ExtractTest extends TestCase
         $this->assertEquals('/game/xbox-series-x/microsoft-flight-simulator', $result['result']['url']);
         $this->assertEquals('microsoft-flight-simulator', $result['result']['url_slug']);
         $this->assertEquals('Microsoft Flight Simulator', $result['result']['title']);
-        $this->assertEquals('https://static.metacritic.com/images/products/games/7/303224e6c9979050d41e2051fc2a6b7d-98.jpg', $result['result']['thumbnail']);
+        $this->assertEquals('https://static.metacritic.com/images/products/games/7/1cc2e1878b4f5e9252f9f3b740e99125-98.jpg', $result['result']['thumbnail']);
         $this->assertEquals('2021', $result['result']['release_year']);
         $this->assertEquals('game', $result['result']['type']);
 
