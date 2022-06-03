@@ -38,6 +38,38 @@ class ExtractTest extends TestCase
         $this->assertNull($result['error']);
     }
 
+    public function testExtractMovieNewVersion()
+    {
+        $search = new \Hooshid\MetacriticScraper\Metacritic();
+        $result = $search->extract('/movie/top-gun-maverick');
+        $this->assertIsArray($result);
+        $this->assertCount(18, $result['result']);
+
+        $this->assertEquals('https://www.metacritic.com/movie/top-gun-maverick', $result['result']['full_url']);
+        $this->assertEquals('/movie/top-gun-maverick', $result['result']['url']);
+        $this->assertEquals('top-gun-maverick', $result['result']['url_slug']);
+        $this->assertEquals('Top Gun: Maverick', $result['result']['title']);
+        $this->assertEquals('https://www.metacritic.com/a/img/resize/f66ed4271121da09fcdc64178101170ab757e3bd/hub/mctest/top-gun-maverick/Top-Gun_-Maverick-9ba4cdcfae4c8a839bbfd29ba11ca9b5.jpg?auto=webp&fit=crop&height=675&width=1200', $result['result']['thumbnail']);
+        $this->assertEquals('2022', $result['result']['release_year']);
+        $this->assertEquals('movie', $result['result']['type']);
+
+        $this->assertIsInt($result['result']['meta_score']);
+        $this->assertIsInt($result['result']['meta_votes']);
+        $this->assertIsFloat($result['result']['user_score']);
+        $this->assertIsInt($result['result']['user_votes']);
+
+        $this->assertFalse($result['result']['must_see']);
+        /*
+        $this->assertEquals('A computer hacker (Keanu Reeves) learns that his entire life has been a virtual dream, orchestrated by a strange class of computer overlords in the far future. He joins a resistance movement to free humanity from lives of computerized brainwashing.', $result['result']['summary']);
+        $this->assertEquals('Carrie-Anne Moss, Keanu Reeves, Laurence Fishburne', implode(', ', $result['result']['starring']));
+        $this->assertEquals('Lana Wachowski and Lilly Wachowski', implode(' and ', $result['result']['director']));
+        $this->assertEquals('Action, Adventure, Sci-Fi, Thriller', implode(', ', $result['result']['genres']));
+        $this->assertEquals('R', $result['result']['rating']);
+        $this->assertEquals('136 min', $result['result']['runtime']);
+*/
+        $this->assertNull($result['error']);
+    }
+
     public function testExtractTV()
     {
         $search = new \Hooshid\MetacriticScraper\Metacritic();
@@ -122,7 +154,7 @@ class ExtractTest extends TestCase
         $this->assertLessThan(95, $result['result']['meta_score']);
         $this->assertGreaterThan(29, $result['result']['meta_votes']);
 
-        $this->assertGreaterThan(8, $result['result']['user_score']);
+        $this->assertGreaterThan(7, $result['result']['user_score']);
         $this->assertLessThan(9, $result['result']['user_score']);
         $this->assertGreaterThan(277, $result['result']['user_votes']);
 
@@ -132,7 +164,7 @@ class ExtractTest extends TestCase
         $this->assertEquals('Asobo Studio', implode(', ', $result['result']['developers']));
         $this->assertEquals('Microsoft Game Studios, Microsoft, Xbox Game Studios', implode(', ', $result['result']['publishers']));
         $this->assertIsArray($result['result']['also_on']);
-        $this->assertCount(1, $result['result']['also_on']);
+        $this->assertCount(2, $result['result']['also_on']);
         $this->assertEquals('https://www.gamefaqs.com/console/xbox-series-x/code/265963.html', $result['result']['cheat_url']);
         $this->assertEquals('Xbox Series X', $result['result']['platform']);
 

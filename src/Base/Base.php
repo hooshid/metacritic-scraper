@@ -73,4 +73,17 @@ class Base
     {
         return (int)filter_var($str, FILTER_SANITIZE_NUMBER_INT);
     }
+
+    /**
+     * @return mixed|null
+     */
+    protected function jsonLD($html)
+    {
+        if(empty($html)) return [];
+        preg_match('#<script data-n-head="ssr" charset="UTF-8" type="application/ld\+json" data-hid="ld\+json">(.+?)</script>#ims', $html, $matches);
+        //preg_match('#<script type="application/ld\+json">(.+?)</script>#ims', $html, $matches);
+        if(empty($matches[1])) return [];
+        return json_decode($matches[1]);
+    }
+
 }

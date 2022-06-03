@@ -274,17 +274,32 @@ class Metacritic extends Base
 
         // extract summary
         if($type == "movie" or $type == "tv") {
-        if ($html->findOneOrFalse('.summary_deck .blurb_expanded')) {
-            $summary = $html->find('.summary_deck .blurb_expanded', 0)->text();
-        } else {
-            $summary = $html->find('.summary_deck', 0)->text();
-        }
+            if ($html->findOneOrFalse('.summary_deck .blurb_expanded')) {
+                $summary = $html->find('.summary_deck .blurb_expanded', 0)->text();
+            } else {
+                $summary = $html->find('.summary_deck', 0)->text();
+            }
         } else {
             if ($html->findOneOrFalse('.product_summary .blurb_expanded')) {
                 $summary = $html->find('.product_summary .blurb_expanded', 0)->text();
             } else {
                 $summary = $html->find('.product_summary .data', 0)->text();
             }
+        }
+
+        /*********************************** New Version *******************************/
+        if ($html->findOneOrFalse('#__nuxt')) {
+            $json = $this->jsonLD($response);
+            $title = $json->mainEntity->name;
+            $thumbnail = $this->cleanString($json->mainEntity->image);
+            $releaseYear = $this->cleanString($json->mainEntity->dateCreated);
+            $summary = $this->cleanString($json->mainEntity->description);
+            $metaScore = $this->cleanString($json->mainEntity->aggregateRating->ratingValue);
+            $metaScoreVotesCount = $this->cleanString($json->mainEntity->aggregateRating->ratingCount);
+
+            $mustSee = $html->findOneOrFalse('.must_play.product');
+            $userScore = $html->find('.c-siteReviewScore_user span', 0)->text();
+            $userScoreVotesCount = $html->find('.c-entertainmentProductScoreInfo_reviewsTotal', 1)->text();
         }
 
         $output = [];
