@@ -68,7 +68,7 @@ class Metacritic extends Base
             return 'Sort can be one of this: ' . implode(", ", $this->searchSorts);
         }
 
-
+        $search = str_replace("/"," ", $search);
         $response = $this->getContentPage($this->baseUrl . '/search/' . $type . '/' . urlencode($search) . '/results?sort=' . $sort . '&page=' . $page);
         $html = HtmlDomParser::str_get_html($response);
         $baseContent = $html->find('.module.search_results', 0);
