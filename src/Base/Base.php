@@ -18,7 +18,7 @@ class Base
         curl_setopt($ch, CURLOPT_ENCODING, "");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // follow redirects
-        curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
+        curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.4472.124 Safari/537.36");
         $page = curl_exec($ch);
         curl_close($ch);
 
@@ -59,7 +59,7 @@ class Base
      * @param string $needle
      * @return string
      */
-    protected function afterLast($str, $needle = '/'): string
+    protected function afterLast($str, string $needle = '/'): string
     {
         return substr($str, strrpos($str, $needle) + 1);
     }
@@ -80,10 +80,10 @@ class Base
      */
     protected function jsonLD($html)
     {
-        if(empty($html)) return [];
+        if (empty($html)) return [];
         preg_match('#<script data-n-head="ssr" charset="UTF-8" type="application/ld\+json" data-hid="ld\+json">(.+?)</script>#ims', $html, $matches);
         //preg_match('#<script type="application/ld\+json">(.+?)</script>#ims', $html, $matches);
-        if(empty($matches[1])) return [];
+        if (empty($matches[1])) return [];
         return json_decode($matches[1]);
     }
 
