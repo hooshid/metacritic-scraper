@@ -14,6 +14,12 @@ $url = trim(strip_tags($_GET["url"]));
 $metacritic = new Metacritic();
 $extract = $metacritic->extract($url);
 $result = $extract['result'];
+
+if (isset($_GET["output"])) {
+    header("Content-Type: application/json");
+    echo json_encode($extract);
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,6 +31,8 @@ $result = $extract['result'];
 <body>
 
 <a href="/example" class="back-page">Go back</a>
+<a href="/example/extract.php?<?php echo http_build_query($_GET); ?>&output=json" class="output-json-link">JSON
+    Format</a>
 
 <div class="container">
     <div class="boxed" style="max-width: 1300px;">
@@ -46,16 +54,19 @@ $result = $extract['result'];
                 <div class="menu-links-title">Music</div>
                 <a href="extract.php?url=/music/happier-than-ever/billie-eilish">Billie Eilish - Happier than Ever</a>
                 <a href="extract.php?url=/music/revival/selena-gomez">Selena Gomez - Revival</a>
-                <a href="extract.php?url=/music/when-the-sun-goes-down-2011/selena-gomez-the-scene">Selena Gomez & the Scene - When the Sun Goes Down</a>
+                <a href="extract.php?url=/music/when-the-sun-goes-down-2011/selena-gomez-the-scene">Selena Gomez & the
+                    Scene - When the Sun Goes Down</a>
 
                 <div class="menu-links-title">Game</div>
-                <a href="extract.php?url=/game/xbox-series-x/microsoft-flight-simulator">Microsoft Flight Simulator - 2021</a>
-                <a href="extract.php?url=/game/switch/ender-lilies-quietus-of-the-knights">ENDER LILIES: Quietus of the Knights - 2021</a>
+                <a href="extract.php?url=/game/xbox-series-x/microsoft-flight-simulator">Microsoft Flight Simulator -
+                    2021</a>
+                <a href="extract.php?url=/game/switch/ender-lilies-quietus-of-the-knights">ENDER LILIES: Quietus of the
+                    Knights - 2021</a>
             </div>
 
             <div class="col-75">
                 <?php if ($extract['error']) { ?>
-                    <div style="padding: 15px;background: #ff3737;border-radius: 5px;margin-bottom: 15px;color: #fff;"><?php echo $extract['error'];?></div>
+                    <div style="padding: 15px;background: #ff3737;border-radius: 5px;margin-bottom: 15px;color: #fff;"><?php echo $extract['error']; ?></div>
                 <?php } ?>
                 <table class="table">
                     <!-- Main Url -->
@@ -76,7 +87,8 @@ $result = $extract['result'];
                     <?php if ($result['thumbnail']) { ?>
                         <tr>
                             <td><b>Thumbnail:</b></td>
-                            <td><img src="<?php echo $result['thumbnail']; ?>" alt="<?php echo $result['title']; ?> thumbnail" style="max-width: 100px;"></td>
+                            <td><img src="<?php echo $result['thumbnail']; ?>"
+                                     alt="<?php echo $result['title']; ?> thumbnail" style="max-width: 100px;"></td>
                         </tr>
                     <?php } ?>
 
@@ -92,7 +104,8 @@ $result = $extract['result'];
                     <?php if ($result['meta_votes']) { ?>
                         <tr>
                             <td><b>Meta Score:</b></td>
-                            <td>score: <?php echo $result['meta_score']; ?>, votes: <?php echo number_format($result['meta_votes']); ?></td>
+                            <td>score: <?php echo $result['meta_score']; ?>,
+                                votes: <?php echo number_format($result['meta_votes']); ?></td>
                         </tr>
                     <?php } ?>
 
@@ -100,25 +113,34 @@ $result = $extract['result'];
                     <?php if ($result['user_votes']) { ?>
                         <tr>
                             <td><b>User Score:</b></td>
-                            <td>score: <?php echo $result['user_score']; ?>, votes: <?php echo number_format($result['user_votes']); ?></td>
+                            <td>score: <?php echo $result['user_score']; ?>,
+                                votes: <?php echo number_format($result['user_votes']); ?></td>
                         </tr>
                     <?php } ?>
 
                     <!-- Must See (on movie and tv) -->
-                    <?php if (isset($result['must_see'])) {?>
-                    <tr>
-                        <td><b>Must See?</b></td>
-                        <td><?php if ($result['must_see']) {echo "Yes";} else {echo "No";}?></td>
-                    </tr>
-                    <?php }?>
+                    <?php if (isset($result['must_see'])) { ?>
+                        <tr>
+                            <td><b>Must See?</b></td>
+                            <td><?php if ($result['must_see']) {
+                                    echo "Yes";
+                                } else {
+                                    echo "No";
+                                } ?></td>
+                        </tr>
+                    <?php } ?>
 
                     <!-- Must Play (on game) -->
-                    <?php if (isset($result['must_play'])) {?>
-                    <tr>
-                        <td><b>Must Play?</b></td>
-                        <td><?php if ($result['must_play']) {echo "Yes";} else {echo "No";}?></td>
-                    </tr>
-                    <?php }?>
+                    <?php if (isset($result['must_play'])) { ?>
+                        <tr>
+                            <td><b>Must Play?</b></td>
+                            <td><?php if ($result['must_play']) {
+                                    echo "Yes";
+                                } else {
+                                    echo "No";
+                                } ?></td>
+                        </tr>
+                    <?php } ?>
 
                     <!-- Summary -->
                     <?php if ($result['summary']) { ?>
@@ -138,7 +160,7 @@ $result = $extract['result'];
 
                     <!--------------------------------- For movie & tv --------------------------------->
                     <!-- Starring -->
-                    <?php if(isset($result['starring']) and !empty($result['starring'])) { ?>
+                    <?php if (isset($result['starring']) and !empty($result['starring'])) { ?>
                         <tr>
                             <td><b>Starring:</b></td>
                             <td><?php echo implode(', ', $result['starring']); ?></td>
@@ -210,7 +232,7 @@ $result = $extract['result'];
                             <td class="menu-links">
                                 <?php foreach ($result['also_on'] as $platform) { ?>
                                     <a href="extract.php?url=<?php echo $platform['url']; ?>"><?php echo $platform['title']; ?></a>
-                                <?php }?>
+                                <?php } ?>
                             </td>
                         </tr>
                     <?php } ?>

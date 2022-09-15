@@ -23,6 +23,11 @@ function url($type): string
     return "/example/search.php?search=" . $search . "&type=" . $type;
 }
 
+if (isset($_GET["output"])) {
+    header("Content-Type: application/json");
+    echo json_encode($results);
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -34,6 +39,8 @@ function url($type): string
 <body>
 
 <a href="/example" class="back-page">Go back</a>
+<a href="/example/search.php?<?php echo http_build_query($_GET); ?>&output=json" class="output-json-link">JSON
+    Format</a>
 
 <div class="container">
     <div class="boxed" style="max-width: 1000px;">
@@ -60,7 +67,8 @@ function url($type): string
 
                                 <?php if ($res['thumbnail']) { ?>
                                     <div class="result_thumbnail">
-                                        <img src="<?php echo $res['thumbnail']; ?>" alt="<?php echo $res['title']; ?> thumbnail">
+                                        <img src="<?php echo $res['thumbnail']; ?>"
+                                             alt="<?php echo $res['title']; ?> thumbnail">
                                     </div>
                                 <?php } ?>
 
@@ -76,16 +84,19 @@ function url($type): string
                                         <?php if ($res['must_see']) { ?>
                                             <span class="must-see">
                                                 <?php if ($res['type'] == "game") { ?>
-                                                    <img src="https://www.metacritic.com/images/icons/mc-mustplay-sm.svg" alt="Must Play">
+                                                    <img src="https://www.metacritic.com/images/icons/mc-mustplay-sm.svg"
+                                                         alt="Must Play">
                                                 <?php } else { ?>
-                                                    <img src="https://www.metacritic.com/images/icons/mc-mustsee-sm.svg" alt="Must See">
+                                                    <img src="https://www.metacritic.com/images/icons/mc-mustsee-sm.svg"
+                                                         alt="Must See">
                                                 <?php } ?>
                                             </span>
                                         <?php } ?>
 
                                         <h3 class="product_title basic_stat">
-                                            <a href="extract.php?url=<?php echo $res['url']; ?>"><?php echo $res['title']; ?></a> <span class="meta-link"><a href="<?php echo $res['full_url']; ?>"
-                                                                                                                                                             target="_blank">MC</a></span>
+                                            <a href="extract.php?url=<?php echo $res['url']; ?>"><?php echo $res['title']; ?></a>
+                                            <span class="meta-link"><a href="<?php echo $res['full_url']; ?>"
+                                                                       target="_blank">MC</a></span>
                                         </h3>
                                         <p>
                                             <?php echo $res['type']; ?>

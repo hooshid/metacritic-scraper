@@ -16,6 +16,12 @@ $page = isset($_GET["page"]) ? (int)$_GET["page"] : 0;
 $metacritic = new Metacritic();
 $results = $metacritic->browse($url, $page);
 $number = 0;
+
+if (isset($_GET["output"])) {
+    header("Content-Type: application/json");
+    echo json_encode($results);
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -27,6 +33,8 @@ $number = 0;
 <body>
 
 <a href="/example" class="back-page">Go back</a>
+<a href="/example/browse.php?<?php echo http_build_query($_GET); ?>&output=json" class="output-json-link">JSON
+    Format</a>
 
 <div class="container">
     <div class="boxed" style="max-width: 1000px;">
@@ -37,17 +45,21 @@ $number = 0;
                 <div class="menu-links-title">Movies</div>
                 <a href="browse.php?url=/browse/movies/release-date/theaters/date">New Releases In Theaters</a>
                 <a href="browse.php?url=/browse/movies/score/metascore/year/filtered">Best Movies This Year</a>
-                <a href="browse.php?url=/browse/movies/score/metascore/all/filtered?sort=desc">Best Movies of All Time</a>
+                <a href="browse.php?url=/browse/movies/score/metascore/all/filtered?sort=desc">Best Movies of All
+                    Time</a>
 
                 <div class="menu-links-title">TV</div>
-                <a href="browse.php?url=/browse/tv/release-date/new-series/date?view=detailed">New & Returning TV Shows</a>
-                <a href="browse.php?url=/browse/tv/score/metascore/year/filtered?sort=desc&view=detailed">Best TV Shows This Year</a>
+                <a href="browse.php?url=/browse/tv/release-date/new-series/date?view=detailed">New & Returning TV
+                    Shows</a>
+                <a href="browse.php?url=/browse/tv/score/metascore/year/filtered?sort=desc&view=detailed">Best TV Shows
+                    This Year</a>
                 <a href="browse.php?url=/browse/tv/score/metascore/all/filtered?sort=desc">Best TV Shows of All Time</a>
 
                 <div class="menu-links-title">Music</div>
                 <a href="browse.php?url=/browse/albums/release-date/new-releases/date">New Releases</a>
                 <a href="browse.php?url=/browse/albums/score/metascore/year/filtered">Best Albums This Year</a>
-                <a href="browse.php?url=/browse/albums/score/metascore/all/filtered?sort=desc">Best Albums of All Time</a>
+                <a href="browse.php?url=/browse/albums/score/metascore/all/filtered?sort=desc">Best Albums of All
+                    Time</a>
 
                 <div class="menu-links-title">Game</div>
                 <a href="browse.php?url=/browse/games/score/metascore/year/all/filtered">Best Games This Year</a>
@@ -62,7 +74,8 @@ $number = 0;
 
                                 <?php if ($res['thumbnail']) { ?>
                                     <div class="result_thumbnail">
-                                        <img src="<?php echo $res['thumbnail']; ?>" alt="<?php echo $res['title']; ?> thumbnail">
+                                        <img src="<?php echo $res['thumbnail']; ?>"
+                                             alt="<?php echo $res['title']; ?> thumbnail">
                                     </div>
                                 <?php } ?>
 
@@ -84,9 +97,11 @@ $number = 0;
                                         <?php if ($res['must_see']) { ?>
                                             <span class="must-see">
                                                 <?php if ($res['type'] == "game") { ?>
-                                                    <img src="https://www.metacritic.com/images/icons/mc-mustplay-sm.svg" alt="Must Play">
+                                                    <img src="https://www.metacritic.com/images/icons/mc-mustplay-sm.svg"
+                                                         alt="Must Play">
                                                 <?php } else { ?>
-                                                    <img src="https://www.metacritic.com/images/icons/mc-mustsee-sm.svg" alt="Must See">
+                                                    <img src="https://www.metacritic.com/images/icons/mc-mustsee-sm.svg"
+                                                         alt="Must See">
                                                 <?php } ?>
                                             </span>
                                         <?php } ?>
@@ -94,7 +109,10 @@ $number = 0;
                                         <h3 class="product_title basic_stat">
                                             <?php if ($res['number']) {
                                                 echo $res['number'] . ". ";
-                                            } ?><a href="extract.php?url=<?php echo $res['url']; ?>"><?php echo $res['title']; ?></a> <span class="meta-link"><a href="<?php echo $res['full_url']; ?>" target="_blank">MC</a></span>
+                                            } ?>
+                                            <a href="extract.php?url=<?php echo $res['url']; ?>"><?php echo $res['title']; ?></a>
+                                            <span class="meta-link"><a href="<?php echo $res['full_url']; ?>"
+                                                                       target="_blank">MC</a></span>
                                         </h3>
                                         <p>
                                             <?php echo $res['type']; ?>,
