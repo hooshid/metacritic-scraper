@@ -49,7 +49,7 @@ class ExtractTest extends TestCase
         $this->assertEquals('/movie/top-gun-maverick', $result['result']['url']);
         $this->assertEquals('top-gun-maverick', $result['result']['url_slug']);
         $this->assertEquals('Top Gun: Maverick', $result['result']['title']);
-        $this->assertEquals('https://www.metacritic.com/a/img/resize/f66ed4271121da09fcdc64178101170ab757e3bd/hub/mctest/top-gun-maverick/Top-Gun_-Maverick-9ba4cdcfae4c8a839bbfd29ba11ca9b5.jpg?auto=webp&fit=crop&height=675&width=1200', $result['result']['thumbnail']);
+        $this->assertEquals('https://static.metacritic.com/images/products/movies/1/39bb945892b93806279d9a32b0655a12-250h.jpg', $result['result']['thumbnail']);
         $this->assertEquals('2022', $result['result']['release_year']);
         $this->assertEquals('movie', $result['result']['type']);
 
