@@ -1,8 +1,10 @@
 # Metacritic Scraper
 
-[![Latest Version on Packagist][ico-version]][link-packagist]
-[![Software License][ico-license]](LICENSE.md)
-[![Total Downloads][ico-downloads]][link-downloads]
+<a href="https://github.com/hooshid/metacritic-scraper/actions"><img src="https://github.com/hooshid/metacritic-scraper/workflows/tests/badge.svg" alt="Build Status"></a>
+<a href="https://packagist.org/packages/hooshid/metacritic-scraper"><img src="https://img.shields.io/packagist/dt/hooshid/metacritic-scraper" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/hooshid/metacritic-scraper"><img src="https://img.shields.io/packagist/v/hooshid/metacritic-scraper" alt="Latest Stable Version"></a>
+<a href="LICENSE.md"><img src="https://img.shields.io/packagist/l/hooshid/metacritic-scraper" alt="License"></a>
+
 
 Using this Metacritic API, you are able to search, browse and extract data of movies, tv series, musics and games on metacritic.com.
 
@@ -125,11 +127,3 @@ just open the example folder, we put all examples and methods demo for you in th
 
 ## License
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
-
-
-[ico-version]: https://img.shields.io/packagist/v/hooshid/metacritic-scraper.svg?style=flat-square
-[ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-[ico-downloads]: https://img.shields.io/packagist/dt/hooshid/metacritic-scraper.svg?style=flat-square
-
-[link-packagist]: https://packagist.org/packages/hooshid/metacritic-scraper
-[link-downloads]: https://packagist.org/packages/hooshid/metacritic-scraper
