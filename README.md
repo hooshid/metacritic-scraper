@@ -122,8 +122,5 @@ just open the example folder, we put all examples and methods demo for you in th
 * [IMDb Scraper](https://github.com/hooshid/imdb-scraper)
 * [Rottentomatoes Scraper](https://github.com/hooshid/rottentomatoes-scraper)
 
-## Todo
-* add sort in search in example
-
 ## License
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.

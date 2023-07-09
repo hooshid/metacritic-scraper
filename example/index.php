@@ -35,6 +35,15 @@
                 </select>
             </div>
 
+            <div class="form-group">
+                <label for="sort">Sort:</label>
+                <select id="sort" name="sort" class="form-field">
+                    <option value="relevancy">Relevancy</option>
+                    <option value="score">Score</option>
+                    <option value="recent">Most Recent</option>
+                </select>
+            </div>
+
             <div class="row">
                 <input type="submit" value="Search">
             </div>

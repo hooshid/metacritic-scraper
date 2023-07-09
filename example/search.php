@@ -13,14 +13,23 @@ if (empty($_GET["search"])) {
 $search = trim(strip_tags($_GET["search"]));
 $page = isset($_GET["page"]) ? (int)$_GET["page"] : 0;
 $type = isset($_GET["type"]) ? trim(strip_tags($_GET["type"])) : 'all';
+$sort = isset($_GET["sort"]) ? trim(strip_tags($_GET["sort"])) : 'relevancy';
 
 $metacritic = new Metacritic();
-$results = $metacritic->search($search, $page, $type);
+$results = $metacritic->search($search, $page, $type, $sort);
 
-function url($type): string
+function urlByType($type): string
 {
     global $search;
-    return "/example/search.php?search=" . $search . "&type=" . $type;
+    global $sort;
+    return "/example/search.php?search=" . $search . "&type=" . $type . "&sort=" . $sort;
+}
+
+function urlBySort($sort): string
+{
+    global $search;
+    global $type;
+    return "/example/search.php?search=" . $search . "&type=" . $type . "&sort=" . $sort;
 }
 
 if (isset($_GET["output"])) {
@@ -48,15 +57,22 @@ if (isset($_GET["output"])) {
 
         <div class="flex-container">
             <div class="col-25 menu-links">
-                <a href="<?php echo url('all'); ?>">All Items</a>
-                <a href="<?php echo url('movie'); ?>">Movies</a>
-                <a href="<?php echo url('game'); ?>">Games</a>
-                <a href="<?php echo url('album'); ?>">Albums</a>
-                <a href="<?php echo url('tv'); ?>">Tv Shows</a>
-                <a href="<?php echo url('person'); ?>">Person</a>
-                <a href="<?php echo url('video'); ?>">Trailers</a>
-                <a href="<?php echo url('company'); ?>">Companies</a>
-                <a href="<?php echo url('story'); ?>">Reports</a>
+                <div class="menu-links-title">Types</div>
+                <a href="<?php echo urlByType('all'); ?>">All Items</a>
+                <a href="<?php echo urlByType('movie'); ?>">Movies</a>
+                <a href="<?php echo urlByType('game'); ?>">Games</a>
+                <a href="<?php echo urlByType('album'); ?>">Albums</a>
+                <a href="<?php echo urlByType('tv'); ?>">Tv Shows</a>
+                <a href="<?php echo urlByType('person'); ?>">Person</a>
+                <a href="<?php echo urlByType('video'); ?>">Trailers</a>
+                <a href="<?php echo urlByType('company'); ?>">Companies</a>
+                <a href="<?php echo urlByType('story'); ?>">Reports</a>
+
+                <br>
+                <div class="menu-links-title">Sort</div>
+                <a href="<?php echo urlBySort('relevancy'); ?>">Relevancy</a>
+                <a href="<?php echo urlBySort('score'); ?>">Score</a>
+                <a href="<?php echo urlBySort('recent'); ?>">Most Recent</a>
             </div>
 
             <div class="col-75">
