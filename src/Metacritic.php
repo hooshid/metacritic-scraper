@@ -134,6 +134,7 @@ class Metacritic extends Base
     public function browse($url, int $page = 0): array
     {
         $url = str_replace("view=condensed", "view=detailed", $url);
+        $url = str_replace("https://www.metacritic.com", "", $url);
         $sep = "?";
         if (stripos($url, "?") !== false) {
             $sep = "&";
@@ -215,6 +216,7 @@ class Metacritic extends Base
      */
     public function extract($url): array
     {
+        $url = str_replace("https://www.metacritic.com", "", $url);
         $response = $this->getContentPage($this->baseUrl . $url);
         $html = HtmlDomParser::str_get_html($response);
 
@@ -329,7 +331,7 @@ class Metacritic extends Base
             $output['runtime'] = $this->cleanString($html->find('.runtime span', 1)->text());
 
             $output['cast'] = [];
-            if ($html->findOneOrFalse(".summary_cast")) {
+            if ($html->findOneOrFalse(".summary_cast a, .director a, .creator a")) {
                 foreach ($html->find(".summary_cast a, .director a, .creator a") as $e) {
                     $url = $e->getAttribute('href');
                     $url_slug = str_replace("/person/", "", $url);
@@ -373,4 +375,84 @@ class Metacritic extends Base
             'error' => $this->cleanString($html->find('.error_title', 0)->text())
         ];
     }
+
+    public function person($url): array
+    {
+        if (!str_contains($url, 'person')) {
+            $url = "/person/" . $url;
+        }
+
+        $response = $this->getContentPage($this->baseUrl . $url . "?filter-options=movies&sort_options=date&num_items=100");
+        $html = HtmlDomParser::str_get_html($response);
+
+        $output = [];
+        $output['full_url'] = $this->baseUrl . $url;
+        $output['url_slug'] = $this->afterLast($url);
+        $output['name'] = $this->cleanString($html->find('h1', 0)->text());
+        $output['bio'] = $this->cleanString($html->find('.bio .blurb_expanded', 0)->text());
+
+        $types = $html->find('.person_credits_module .tabs_type_1', 0)->text();
+
+        $output['movies'] = [];
+        if ($html->findOneOrFalse(".person_credits") and str_contains($types, 'Movies')) {
+            foreach ($html->find(".person_credits tr") as $e) {
+                $href = $e->find('a', 0)->getAttribute('href');
+                $title = $e->find('a', 0)->text();
+
+                $pattern = "/\b\d{4}\b/";
+                preg_match($pattern, $e->find('.year', 0)->text(), $matches);
+                if ($matches && $matches[0]) {
+                    $year = (int)$matches[0];
+                } else {
+                    $year = null;
+                }
+
+                if (!empty($href) and !empty($title)) {
+                    $output['movies'][] = [
+                        'title' => $this->cleanString($title),
+                        'url' => $this->baseUrl . $href,
+                        'url_slug' => $this->afterLast($href),
+                        'year' => $year
+                    ];
+                }
+            }
+        }
+
+        if (str_contains($types, 'Movies')) {
+            $response = $this->getContentPage($this->baseUrl . $url . "?filter-options=tv&sort_options=date&num_items=100");
+            $html = HtmlDomParser::str_get_html($response);
+        }
+
+        $output['tv'] = [];
+        if ($html->findOneOrFalse(".person_credits") and str_contains($types, 'TV')) {
+            foreach ($html->find(".person_credits tr") as $e) {
+                $href = $e->find('a', 0)->getAttribute('href');
+                $title = $e->find('a', 0)->text();
+
+                $pattern = "/\b\d{4}\b/";
+                preg_match($pattern, $e->find('.year', 0)->text(), $matches);
+                if ($matches && $matches[0]) {
+                    $year = (int)$matches[0];
+                } else {
+                    $year = null;
+                }
+
+                if (!empty($href) and !empty($title)) {
+                    $output['tv'][] = [
+                        'title' => $this->cleanString($title),
+                        'url' => $this->baseUrl . $href,
+                        'url_slug_season' => $this->afterLast($href),
+                        'url_slug' => $this->beforeLast(str_replace('/tv/', '', $href)),
+                        'year' => $year
+                    ];
+                }
+            }
+        }
+
+        return [
+            'result' => $output,
+            'error' => $this->cleanString($html->find('.error_title', 0)->text())
+        ];
+    }
+
 }

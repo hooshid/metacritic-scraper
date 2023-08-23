@@ -50,6 +50,7 @@ if (isset($_GET["output"])) {
                 <div class="menu-links-title">TV</div>
                 <a href="extract.php?url=/tv/game-of-thrones">Game of Thrones</a>
                 <a href="extract.php?url=/tv/breaking-bad">Breaking Bad</a>
+                <a href="extract.php?url=/tv/chernobyl">Chernobyl</a>
 
                 <div class="menu-links-title">Music</div>
                 <a href="extract.php?url=/music/happier-than-ever/billie-eilish">Billie Eilish - Happier than Ever</a>
@@ -172,6 +173,18 @@ if (isset($_GET["output"])) {
                         <tr>
                             <td><b>Director:</b></td>
                             <td><?php echo implode(' and ', $result['director']); ?></td>
+                        </tr>
+                    <?php } ?>
+
+                    <!-- Cast -->
+                    <?php if (isset($result['cast']) and !empty($result['cast'])) { ?>
+                        <tr>
+                            <td><b>Cast:</b></td>
+                            <td>
+                                <?php foreach ($result['cast'] as $cast) { ?>
+                                    <a href="person.php?url=<?php echo $cast['url_slug']; ?>"><?php echo $cast['name']; ?></a>,
+                                <?php } ?>
+                            </td>
                         </tr>
                     <?php } ?>
 

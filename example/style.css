@@ -264,6 +264,7 @@ h2 {
     text-decoration: none;
 }
 
+a:hover,
 .menu-links a:hover {
     color: #4CAF50;
 }

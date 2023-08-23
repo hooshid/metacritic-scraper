@@ -65,6 +65,22 @@ class Base
     }
 
     /**
+     * get value before last specific char
+     *
+     * @param $str
+     * @param string $needle
+     * @return string
+     */
+    protected function beforeLast($str, string $needle = '/'): string
+    {
+        $lastPos = strrpos($str, $needle);
+        if ($lastPos === false) {
+            return $str;
+        }
+        return substr($str, 0, $lastPos);
+    }
+
+    /**
      * extract numbers from string
      *
      * @param $str

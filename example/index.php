@@ -52,21 +52,21 @@
     </div>
 
     <div class="boxed" style="max-width: 700px;">
-        <h2 class="text-center pb-30">Browse lists</h2>
+        <h2 class="text-center pb-30">Examples</h2>
 
         <div class="menu-links">
-            <a href="/example/browse.php?url=/browse/movies/score/metascore/all/filtered?sort=desc">Best Movies of All Time</a>
-            <a href="/example/browse.php?url=/browse/tv/score/metascore/all/filtered?sort=desc">Best TV Shows of All Time</a>
-            <a href="/example/browse.php?url=/browse/albums/score/metascore/all/filtered?sort=desc">Best Albums of All Time</a>
-        </div>
-    </div>
+            <a href="/example/extract.php?url=/movie/the-matrix">Movie - The Matrix (1999)</a>
+            <a href="/example/extract.php?url=/movie/the-matrix">Movie - John Wick (2014)</a>
 
-    <div class="boxed" style="max-width: 700px;">
-        <h2 class="text-center pb-30">Extract data</h2>
+            <a href="/example/extract.php?url=/tv/game-of-thrones">TV Series - Game of Thrones</a>
+            <a href="/example/extract.php?url=/tv/house-of-the-dragon">TV Series - House of the Dragon</a>
 
-        <div class="menu-links">
-            <a href="/example/extract.php?url=/movie/the-matrix">The Matrix (1999) - Movie</a>
-            <a href="/example/extract.php?url=/tv/game-of-thrones">Game of Thrones - TV Series</a>
+            <a href="/example/person.php?url=tom-cruise">Person - Tom Cruise</a>
+            <a href="/example/person.php?url=keanu-reeves">Person - Keanu Reeves</a>
+
+            <a href="/example/browse.php?url=/browse/movies/score/metascore/all/filtered?sort=desc">Browse lists - Best Movies of All Time</a>
+            <a href="/example/browse.php?url=/browse/tv/score/metascore/all/filtered?sort=desc">Browse lists - Best TV Shows of All Time</a>
+            <a href="/example/browse.php?url=/browse/albums/score/metascore/all/filtered?sort=desc">Browse lists - Best Albums of All Time</a>
         </div>
     </div>
 </div>
