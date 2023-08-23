@@ -93,7 +93,7 @@ class Metacritic extends Base
                     $year = (int)$matches[1];
                 }
 
-                $metaScore = $e->find('.main_stats .metascore_w', 0)->text();
+                $metaScore = $this->cleanString($e->find('.main_stats .metascore_w', 0)->text());
                 preg_match("/(\w+)/", $url, $type);
                 if (stripos($url, "trailers") !== false) {
                     $type[1] = "video";
@@ -117,7 +117,7 @@ class Metacritic extends Base
         return [
             'results' => $output,
             'paginate' => [
-                'current_page' => (int)$page,
+                'current_page' => $page,
                 'last_page' => (int)$html->find('.pages .last_page .page_num', 0)->text(),
                 'per_page' => 10,
             ],
@@ -159,8 +159,8 @@ class Metacritic extends Base
                     $year = $matches[1];
                 }
 
-                $metaScore = $e->find('.metascore_w', 0)->text();
-                $userScore = $e->find('.metascore_w.user', 0)->text();
+                $metaScore = $this->cleanString($e->find('.metascore_w', 0)->text());
+                $userScore = $this->cleanString($e->find('.metascore_w.user', 0)->text());
 
                 $title = $this->cleanString($e->find('a.title', 0)->text());
                 $artist = $this->cleanString($e->find('.clamp-details .artist', 0)->text(), 'by ');
@@ -200,7 +200,7 @@ class Metacritic extends Base
         return [
             'results' => $output,
             'paginate' => [
-                'current_page' => (int)$page,
+                'current_page' => $page,
                 'last_page' => (int)$html->find('.pages .last_page .page_num', 0)->text(),
                 'per_page' => 100,
             ],
@@ -299,8 +299,8 @@ class Metacritic extends Base
             $metaScoreVotesCount = $this->cleanString($json->mainEntity->aggregateRating->ratingCount);
 
             $mustSee = $html->findOneOrFalse('.must_play.product');
-            $userScore = $html->find('.c-siteReviewScore_user span', 0)->text();
-            $userScoreVotesCount = $html->find('.c-entertainmentProductScoreInfo_reviewsTotal', 1)->text();
+            $userScore = $this->cleanString($html->find('.c-siteReviewScore_user span', 0)->text());
+            $userScoreVotesCount = $this->cleanString($html->find('.c-entertainmentProductScoreInfo_reviewsTotal', 1)->text());
         }
 
         $output = [];
@@ -327,6 +327,23 @@ class Metacritic extends Base
 
             $output['rating'] = $this->cleanString($html->find('.rating span', 1)->text());
             $output['runtime'] = $this->cleanString($html->find('.runtime span', 1)->text());
+
+            $output['cast'] = [];
+            if ($html->findOneOrFalse(".summary_cast")) {
+                foreach ($html->find(".summary_cast a, .director a, .creator a") as $e) {
+                    $url = $e->getAttribute('href');
+                    $url_slug = str_replace("/person/", "", $url);
+                    $name = $e->text();
+
+                    if (!empty($url_slug) and !empty($name)) {
+                        $output['cast'][] = [
+                            'name' => $this->cleanString($name),
+                            'full_url' => $this->baseUrl . $this->cleanString($url),
+                            'url_slug' => $this->cleanString($url_slug)
+                        ];
+                    }
+                }
+            }
         }
 
         $output['genres'] = $html->find('.genres span span, .product_genre .data')->text();

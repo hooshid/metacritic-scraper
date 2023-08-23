@@ -9,7 +9,7 @@ class ExtractTest extends TestCase
         $search = new \Hooshid\MetacriticScraper\Metacritic();
         $result = $search->extract('/movie/the-matrix');
         $this->assertIsArray($result);
-        $this->assertCount(18, $result['result']);
+        $this->assertCount(19, $result['result']);
 
         $this->assertEquals('https://www.metacritic.com/movie/the-matrix', $result['result']['full_url']);
         $this->assertEquals('/movie/the-matrix', $result['result']['url']);
@@ -35,6 +35,16 @@ class ExtractTest extends TestCase
         $this->assertEquals('R', $result['result']['rating']);
         $this->assertEquals('136 min', $result['result']['runtime']);
 
+        $this->assertIsArray($result['result']['cast']);
+        $this->assertCount(5, $result['result']['cast']);
+        $this->assertEquals('Carrie-Anne Moss', $result['result']['cast'][0]['name']);
+        $this->assertEquals('https://www.metacritic.com/person/carrie-anne-moss', $result['result']['cast'][0]['full_url']);
+        $this->assertEquals('carrie-anne-moss', $result['result']['cast'][0]['url_slug']);
+
+        $this->assertEquals('Keanu Reeves', $result['result']['cast'][1]['name']);
+        $this->assertEquals('https://www.metacritic.com/person/keanu-reeves', $result['result']['cast'][1]['full_url']);
+        $this->assertEquals('keanu-reeves', $result['result']['cast'][1]['url_slug']);
+
         $this->assertNull($result['error']);
     }
 
@@ -43,7 +53,7 @@ class ExtractTest extends TestCase
         $search = new \Hooshid\MetacriticScraper\Metacritic();
         $result = $search->extract('/movie/top-gun-maverick');
         $this->assertIsArray($result);
-        $this->assertCount(18, $result['result']);
+        $this->assertCount(19, $result['result']);
 
         $this->assertEquals('https://www.metacritic.com/movie/top-gun-maverick', $result['result']['full_url']);
         $this->assertEquals('/movie/top-gun-maverick', $result['result']['url']);
@@ -75,7 +85,7 @@ class ExtractTest extends TestCase
         $search = new \Hooshid\MetacriticScraper\Metacritic();
         $result = $search->extract('/tv/breaking-bad');
         $this->assertIsArray($result);
-        $this->assertCount(18, $result['result']);
+        $this->assertCount(19, $result['result']);
 
         $this->assertEquals('https://www.metacritic.com/tv/breaking-bad', $result['result']['full_url']);
         $this->assertEquals('/tv/breaking-bad', $result['result']['url']);
@@ -100,6 +110,16 @@ class ExtractTest extends TestCase
         $this->assertEquals('Drama, Action & Adventure, Suspense', implode(', ', $result['result']['genres']));
         $this->assertNull($result['result']['rating']);
         $this->assertNull($result['result']['runtime']);
+
+        $this->assertIsArray($result['result']['cast']);
+        $this->assertCount(9, $result['result']['cast']);
+        $this->assertEquals('Bryan Cranston', $result['result']['cast'][0]['name']);
+        $this->assertEquals('https://www.metacritic.com/person/bryan-cranston', $result['result']['cast'][0]['full_url']);
+        $this->assertEquals('bryan-cranston', $result['result']['cast'][0]['url_slug']);
+
+        $this->assertEquals('Bob Odenkirk', $result['result']['cast'][1]['name']);
+        $this->assertEquals('https://www.metacritic.com/person/bob-odenkirk', $result['result']['cast'][1]['full_url']);
+        $this->assertEquals('bob-odenkirk', $result['result']['cast'][1]['url_slug']);
 
         $this->assertNull($result['error']);
     }
