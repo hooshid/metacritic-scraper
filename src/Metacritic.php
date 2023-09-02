@@ -440,6 +440,8 @@ class Metacritic extends Base
                 if (!empty($href) and !empty($title)) {
                     $output['series'][] = [
                         'title' => $this->cleanString($title),
+                        'series_title' => trim($this->beforeLast($title,':')),
+                        'series_season' => trim($this->afterLast($title,':')),
                         'url' => $this->baseUrl . $href,
                         'url_slug_season' => $this->afterLast($href),
                         'url_slug' => $this->beforeLast(str_replace('/tv/', '', $href)),
