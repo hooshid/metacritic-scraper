@@ -89,12 +89,12 @@ if (isset($_GET["output"])) {
                         </tr>
                     <?php } ?>
 
-                    <!-- TV -->
-                    <?php if ($result['tv']) { ?>
+                    <!-- Series -->
+                    <?php if ($result['series']) { ?>
                         <tr>
                             <td><b>TV:</b></td>
                             <td class="menu-links">
-                                <?php foreach ($result['tv'] as $tv) { ?>
+                                <?php foreach ($result['series'] as $tv) { ?>
                                     <a href="extract.php?url=<?php echo $tv['url']; ?>"><?php echo $tv['title']; ?>
                                         (<?php echo $tv['year']; ?>)</a>
                                 <?php } ?>

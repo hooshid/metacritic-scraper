@@ -16,7 +16,7 @@ class PersonTest extends TestCase
         $this->assertEquals('Tom Cruise', $result['result']['name']);
         $this->assertGreaterThan(2500, strlen($result['result']['bio']));
         $this->assertIsArray($result['result']['movies']);
-        $this->assertIsArray($result['result']['tv']);
+        $this->assertIsArray($result['result']['series']);
 
         $this->assertNull($result['error']);
     }

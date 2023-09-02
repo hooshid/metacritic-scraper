@@ -423,7 +423,7 @@ class Metacritic extends Base
             $html = HtmlDomParser::str_get_html($response);
         }
 
-        $output['tv'] = [];
+        $output['series'] = [];
         if ($html->findOneOrFalse(".person_credits") and str_contains($types, 'TV')) {
             foreach ($html->find(".person_credits tr") as $e) {
                 $href = $e->find('a', 0)->getAttribute('href');
@@ -438,7 +438,7 @@ class Metacritic extends Base
                 }
 
                 if (!empty($href) and !empty($title)) {
-                    $output['tv'][] = [
+                    $output['series'][] = [
                         'title' => $this->cleanString($title),
                         'url' => $this->baseUrl . $href,
                         'url_slug_season' => $this->afterLast($href),
