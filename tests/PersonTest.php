@@ -20,4 +20,12 @@ class PersonTest extends TestCase
 
         $this->assertNull($result['error']);
     }
+
+    public function testPersonNotFound()
+    {
+        $search = new \Hooshid\MetacriticScraper\Metacritic();
+        $result = $search->person('not-found');
+        $this->assertIsArray($result);
+        $this->assertEquals(404, $result['error']);
+    }
 }

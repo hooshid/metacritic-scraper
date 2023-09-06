@@ -440,8 +440,8 @@ class Metacritic extends Base
                 if (!empty($href) and !empty($title)) {
                     $output['series'][] = [
                         'title' => $this->cleanString($title),
-                        'series_title' => trim($this->beforeLast($title,':')),
-                        'series_season' => trim($this->afterLast($title,':')),
+                        'series_title' => trim($this->beforeLast($title, ':')),
+                        'series_season' => trim($this->afterLast($title, ':')),
                         'url' => $this->baseUrl . $href,
                         'url_slug_season' => $this->afterLast($href),
                         'url_slug' => $this->beforeLast(str_replace('/tv/', '', $href)),
@@ -451,9 +451,18 @@ class Metacritic extends Base
             }
         }
 
+        $error = $this->cleanString($html->find('.error_title', 0)->text());
+        if (!empty($error)) {
+            if (str_contains($error, '404') or str_contains($error, 'Page Not Found')) {
+                $error = 404;
+            } elseif (str_contains($error, '503') or str_contains($error, 'Service Unavailable')) {
+                $error = 503;
+            }
+        }
+
         return [
             'result' => $output,
-            'error' => $this->cleanString($html->find('.error_title', 0)->text())
+            'error' => $error
         ];
     }
 
