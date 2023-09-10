@@ -56,7 +56,7 @@
 
         <div class="menu-links">
             <a href="/example/extract.php?url=/movie/the-matrix">Movie - The Matrix (1999)</a>
-            <a href="/example/extract.php?url=/movie/the-matrix">Movie - John Wick (2014)</a>
+            <a href="/example/extract.php?url=/movie/john-wick">Movie - John Wick (2014)</a>
 
             <a href="/example/extract.php?url=/tv/game-of-thrones">TV Series - Game of Thrones</a>
             <a href="/example/extract.php?url=/tv/house-of-the-dragon">TV Series - House of the Dragon</a>

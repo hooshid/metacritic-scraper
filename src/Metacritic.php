@@ -378,7 +378,7 @@ class Metacritic extends Base
 
     public function person($url): array
     {
-        if (!str_contains($url, 'person')) {
+        if (!str_contains($url, '/person/')) {
             $url = "/person/" . $url;
         }
 
