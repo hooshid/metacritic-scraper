@@ -2,6 +2,7 @@
 
 namespace Hooshid\MetacriticScraper;
 
+use Exception;
 use Hooshid\MetacriticScraper\Base\Base;
 use voku\helper\HtmlDomParser;
 
@@ -378,85 +379,65 @@ class Metacritic extends Base
 
     public function person($url): array
     {
-        if (!str_contains($url, '/person/')) {
+        if (!strpos($url, 'person')) {
             $url = "/person/" . $url;
         }
 
-        $response = $this->getContentPage($this->baseUrl . $url . "?filter-options=movies&sort_options=date&num_items=100");
+        $response = $this->getContentPage($this->baseUrl . $url . "/?sort-options=date&filter=shows");
         $html = HtmlDomParser::str_get_html($response);
+        $pageTitle = $this->cleanString($html->find('title', 0)->text());
+        $pageTitle = trim(str_replace('- Metacritic', '', $pageTitle));
+        $error = null;
 
         $output = [];
         $output['full_url'] = $this->baseUrl . $url;
         $output['url_slug'] = $this->afterLast($url);
-        $output['name'] = $this->cleanString($html->find('h1', 0)->text());
-        $output['bio'] = $this->cleanString($html->find('.bio .blurb_expanded', 0)->text());
-
-        $types = $html->find('.person_credits_module .tabs_type_1', 0)->text();
-
+        $output['name'] = null;
         $output['movies'] = [];
-        if ($html->findOneOrFalse(".person_credits") and str_contains($types, 'Movies')) {
-            foreach ($html->find(".person_credits tr") as $e) {
-                $href = $e->find('a', 0)->getAttribute('href');
-                $title = $e->find('a', 0)->text();
-
-                $pattern = "/\b\d{4}\b/";
-                preg_match($pattern, $e->find('.year', 0)->text(), $matches);
-                if ($matches && $matches[0]) {
-                    $year = (int)$matches[0];
-                } else {
-                    $year = null;
-                }
-
-                if (!empty($href) and !empty($title)) {
-                    $output['movies'][] = [
-                        'title' => $this->cleanString($title),
-                        'url' => $this->baseUrl . $href,
-                        'url_slug' => $this->afterLast($href),
-                        'year' => $year
-                    ];
-                }
-            }
-        }
-
-        if (str_contains($types, 'Movies')) {
-            $response = $this->getContentPage($this->baseUrl . $url . "?filter-options=tv&sort_options=date&num_items=100");
-            $html = HtmlDomParser::str_get_html($response);
-        }
-
         $output['series'] = [];
-        if ($html->findOneOrFalse(".person_credits") and str_contains($types, 'TV')) {
-            foreach ($html->find(".person_credits tr") as $e) {
-                $href = $e->find('a', 0)->getAttribute('href');
-                $title = $e->find('a', 0)->text();
 
-                $pattern = "/\b\d{4}\b/";
-                preg_match($pattern, $e->find('.year', 0)->text(), $matches);
-                if ($matches && $matches[0]) {
-                    $year = (int)$matches[0];
-                } else {
-                    $year = null;
-                }
+        if ($pageTitle == 'Page Not Found'
+            or strpos($pageTitle, 'Not Found') !== false
+            or $html->findOneOrFalse('.c-error404')) {
+            $error = 404;
+        } else if ($pageTitle == 'Service Unavailable'
+            or strpos($pageTitle, 'Service Unavailable') !== false
+            or strpos($pageTitle, 'Error') !== false
+            or $html->findOneOrFalse('.c-error503')) {
+            $error = 503;
+        } else {
+            $output['name'] = $pageTitle;
 
-                if (!empty($href) and !empty($title)) {
-                    $output['series'][] = [
-                        'title' => $this->cleanString($title),
-                        'series_title' => trim($this->beforeLast($title, ':')),
-                        'series_season' => trim($this->afterLast($title, ':')),
-                        'url' => $this->baseUrl . $href,
-                        'url_slug_season' => $this->afterLast($href),
-                        'url_slug' => $this->beforeLast(str_replace('/tv/', '', $href)),
-                        'year' => $year
+            $response = $this->getContentPage("https://internal-prod.apigee.fandom.net/v1/xapi/people/metacritic/" . $output['url_slug'] . "/credits/web?apiKey=1MOZgmNFxvmljaQR1X9KAij9Mo4xAY3u&componentName=profile&componentDisplayName=Person%20Profile&componentType=Profile&productType=movie&sort=date");
+            $html = HtmlDomParser::str_get_html($response);
+            try {
+                $scoreDetailsJson = json_decode($html);
+                foreach ($scoreDetailsJson->data->items as $e) {
+                    $output['movies'][] = [
+                        'title' => $this->cleanString($e->product->title),
+                        'url' => $this->baseUrl . rtrim($e->product->url, '/'),
+                        'url_slug' => $this->afterLast(rtrim($e->product->url, '/')),
+                        'year' => ((int)$e->product->releaseYear) ?: null
                     ];
                 }
+            } catch (Exception $exception) {
+                $output['movies'] = [];
             }
-        }
 
-        $error = $this->cleanString($html->find('.error_title', 0)->text());
-        if (!empty($error)) {
-            if (str_contains($error, '404') or str_contains($error, 'Page Not Found')) {
-                $error = 404;
-            } elseif (str_contains($error, '503') or str_contains($error, 'Service Unavailable')) {
-                $error = 503;
+            $response = $this->getContentPage("https://internal-prod.apigee.fandom.net/v1/xapi/people/metacritic/" . $output['url_slug'] . "/credits/web?apiKey=1MOZgmNFxvmljaQR1X9KAij9Mo4xAY3u&componentName=profile&componentDisplayName=Person%20Profile&componentType=Profile&productType=show&sort=date");
+            $html = HtmlDomParser::str_get_html($response);
+            try {
+                $scoreDetailsJson = json_decode($html);
+                foreach ($scoreDetailsJson->data->items as $e) {
+                    $output['series'][] = [
+                        'title' => $this->cleanString($e->product->title),
+                        'url' => $this->baseUrl . rtrim($e->product->url, '/'),
+                        'url_slug' => $this->afterLast(rtrim($e->product->url, '/')),
+                        'year' => ((int)$e->product->releaseYear) ?: null
+                    ];
+                }
+            } catch (Exception $exception) {
+                $output['series'] = [];
             }
         }
 
