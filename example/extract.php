@@ -160,14 +160,6 @@ if (isset($_GET["output"])) {
                     <?php } ?>
 
                     <!--------------------------------- For movie & tv --------------------------------->
-                    <!-- Starring -->
-                    <?php if (isset($result['starring']) and !empty($result['starring'])) { ?>
-                        <tr>
-                            <td><b>Starring:</b></td>
-                            <td><?php echo implode(', ', $result['starring']); ?></td>
-                        </tr>
-                    <?php } ?>
-
                     <!-- Director -->
                     <?php if (isset($result['director']) and !empty($result['director'])) { ?>
                         <tr>

@@ -9,13 +9,13 @@ class ExtractTest extends TestCase
         $search = new \Hooshid\MetacriticScraper\Metacritic();
         $result = $search->extract('/movie/the-matrix');
         $this->assertIsArray($result);
-        $this->assertCount(19, $result['result']);
+        $this->assertCount(17, $result['result']);
 
         $this->assertEquals('https://www.metacritic.com/movie/the-matrix', $result['result']['full_url']);
         $this->assertEquals('/movie/the-matrix', $result['result']['url']);
         $this->assertEquals('the-matrix', $result['result']['url_slug']);
         $this->assertEquals('The Matrix', $result['result']['title']);
-        $this->assertEquals('https://static.metacritic.com/images/products/movies/5/14d38f138eb320954cd1e07d0449e5a6-250h.jpg', $result['result']['thumbnail']);
+        $this->assertEquals('https://www.metacritic.com/a/img/resize/7bd4e84a57871f38af5ac241aff388887162c5f2/catalog/provider/2/13/2-82ec049fbb9bc9bc3601207e06a81f5f.jpg?auto=webp&fit=crop&height=675&width=1200', $result['result']['thumbnail']);
         $this->assertEquals('1999', $result['result']['release_year']);
         $this->assertEquals('movie', $result['result']['type']);
 
@@ -29,54 +29,17 @@ class ExtractTest extends TestCase
 
         $this->assertFalse($result['result']['must_see']);
         $this->assertEquals('A computer hacker (Keanu Reeves) learns that his entire life has been a virtual dream, orchestrated by a strange class of computer overlords in the far future. He joins a resistance movement to free humanity from lives of computerized brainwashing.', $result['result']['summary']);
-        $this->assertEquals('Carrie-Anne Moss, Keanu Reeves, Laurence Fishburne', implode(', ', $result['result']['starring']));
-        $this->assertEquals('Lana Wachowski and Lilly Wachowski', implode(' and ', $result['result']['director']));
-        $this->assertEquals('Action, Adventure, Sci-Fi, Thriller', implode(', ', $result['result']['genres']));
+        $this->assertEquals('Action, Sci-Fi', implode(', ', $result['result']['genres']));
         $this->assertEquals('R', $result['result']['rating']);
         $this->assertEquals('136 min', $result['result']['runtime']);
 
         $this->assertIsArray($result['result']['cast']);
-        $this->assertCount(5, $result['result']['cast']);
-        $this->assertEquals('Carrie-Anne Moss', $result['result']['cast'][0]['name']);
-        $this->assertEquals('https://www.metacritic.com/person/carrie-anne-moss', $result['result']['cast'][0]['full_url']);
-        $this->assertEquals('carrie-anne-moss', $result['result']['cast'][0]['url_slug']);
+        $this->assertCount(20, $result['result']['cast']);
 
-        $this->assertEquals('Keanu Reeves', $result['result']['cast'][1]['name']);
-        $this->assertEquals('https://www.metacritic.com/person/keanu-reeves', $result['result']['cast'][1]['full_url']);
-        $this->assertEquals('keanu-reeves', $result['result']['cast'][1]['url_slug']);
+        $this->assertEquals('Keanu Reeves', $result['result']['cast'][0]['name']);
+        $this->assertEquals('https://www.metacritic.com/person/keanu-reeves', $result['result']['cast'][0]['full_url']);
+        $this->assertEquals('keanu-reeves', $result['result']['cast'][0]['url_slug']);
 
-        $this->assertNull($result['error']);
-    }
-
-    public function testExtractMovieNewVersion()
-    {
-        $search = new \Hooshid\MetacriticScraper\Metacritic();
-        $result = $search->extract('/movie/top-gun-maverick');
-        $this->assertIsArray($result);
-        $this->assertCount(19, $result['result']);
-
-        $this->assertEquals('https://www.metacritic.com/movie/top-gun-maverick', $result['result']['full_url']);
-        $this->assertEquals('/movie/top-gun-maverick', $result['result']['url']);
-        $this->assertEquals('top-gun-maverick', $result['result']['url_slug']);
-        $this->assertEquals('Top Gun: Maverick', $result['result']['title']);
-        $this->assertEquals('https://static.metacritic.com/images/products/movies/1/39bb945892b93806279d9a32b0655a12-250h.jpg', $result['result']['thumbnail']);
-        $this->assertEquals('2022', $result['result']['release_year']);
-        $this->assertEquals('movie', $result['result']['type']);
-
-        $this->assertIsInt($result['result']['meta_score']);
-        $this->assertIsInt($result['result']['meta_votes']);
-        $this->assertIsFloat($result['result']['user_score']);
-        $this->assertIsInt($result['result']['user_votes']);
-
-        $this->assertFalse($result['result']['must_see']);
-        /*
-        $this->assertEquals('A computer hacker (Keanu Reeves) learns that his entire life has been a virtual dream, orchestrated by a strange class of computer overlords in the far future. He joins a resistance movement to free humanity from lives of computerized brainwashing.', $result['result']['summary']);
-        $this->assertEquals('Carrie-Anne Moss, Keanu Reeves, Laurence Fishburne', implode(', ', $result['result']['starring']));
-        $this->assertEquals('Lana Wachowski and Lilly Wachowski', implode(' and ', $result['result']['director']));
-        $this->assertEquals('Action, Adventure, Sci-Fi, Thriller', implode(', ', $result['result']['genres']));
-        $this->assertEquals('R', $result['result']['rating']);
-        $this->assertEquals('136 min', $result['result']['runtime']);
-*/
         $this->assertNull($result['error']);
     }
 
@@ -85,13 +48,13 @@ class ExtractTest extends TestCase
         $search = new \Hooshid\MetacriticScraper\Metacritic();
         $result = $search->extract('/tv/breaking-bad');
         $this->assertIsArray($result);
-        $this->assertCount(19, $result['result']);
+        $this->assertCount(17, $result['result']);
 
         $this->assertEquals('https://www.metacritic.com/tv/breaking-bad', $result['result']['full_url']);
         $this->assertEquals('/tv/breaking-bad', $result['result']['url']);
         $this->assertEquals('breaking-bad', $result['result']['url_slug']);
         $this->assertEquals('Breaking Bad', $result['result']['title']);
-        $this->assertEquals('https://static.metacritic.com/images/products/tv/2/ac04956caf6d3ec537238f8a6899a18b-98.jpg', $result['result']['thumbnail']);
+        $this->assertEquals('https://www.metacritic.com/a/img/resize/8bcd4b323f5ced1b68a40900645ea67c8a8f26a1/catalog/provider/2/13/2-94077e8f1aa339d2464cb30d6bec2d3f.jpg?auto=webp&fit=crop&height=675&width=1200', $result['result']['thumbnail']);
         $this->assertEquals('2008', $result['result']['release_year']);
         $this->assertEquals('tv', $result['result']['type']);
 
@@ -104,22 +67,17 @@ class ExtractTest extends TestCase
         $this->assertGreaterThan(825, $result['result']['user_votes']);
 
         $this->assertTrue($result['result']['must_see']);
-        $this->assertEquals('340', strlen($result['result']['summary']));
-        $this->assertEquals('Bryan Cranston, Bob Odenkirk, Anna Gunn, Jonathan Banks, Aaron Paul, Dean Norris, Betsy Brandt, RJ Mitte', implode(', ', $result['result']['starring']));
-        $this->assertEquals('Vince Gilligan', implode(' and ', $result['result']['director']));
-        $this->assertEquals('Drama, Action & Adventure, Suspense', implode(', ', $result['result']['genres']));
+        $this->assertEquals('342', strlen($result['result']['summary']));
+
+        $this->assertEquals('Crime, Drama, Thriller', implode(', ', $result['result']['genres']));
         $this->assertNull($result['result']['rating']);
         $this->assertNull($result['result']['runtime']);
 
         $this->assertIsArray($result['result']['cast']);
-        $this->assertCount(9, $result['result']['cast']);
+        $this->assertCount(20, $result['result']['cast']);
         $this->assertEquals('Bryan Cranston', $result['result']['cast'][0]['name']);
         $this->assertEquals('https://www.metacritic.com/person/bryan-cranston', $result['result']['cast'][0]['full_url']);
         $this->assertEquals('bryan-cranston', $result['result']['cast'][0]['url_slug']);
-
-        $this->assertEquals('Bob Odenkirk', $result['result']['cast'][1]['name']);
-        $this->assertEquals('https://www.metacritic.com/person/bob-odenkirk', $result['result']['cast'][1]['full_url']);
-        $this->assertEquals('bob-odenkirk', $result['result']['cast'][1]['url_slug']);
 
         $this->assertNull($result['error']);
     }
