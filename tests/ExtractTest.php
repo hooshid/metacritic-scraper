@@ -31,7 +31,6 @@ class ExtractTest extends TestCase
         $this->assertEquals('A computer hacker (Keanu Reeves) learns that his entire life has been a virtual dream, orchestrated by a strange class of computer overlords in the far future. He joins a resistance movement to free humanity from lives of computerized brainwashing.', $result['result']['summary']);
         $this->assertEquals('Action, Sci-Fi', implode(', ', $result['result']['genres']));
         $this->assertEquals('R', $result['result']['rating']);
-        $this->assertEquals('136 min', $result['result']['runtime']);
 
         $this->assertIsArray($result['result']['cast']);
         $this->assertCount(20, $result['result']['cast']);
@@ -70,8 +69,7 @@ class ExtractTest extends TestCase
         $this->assertEquals('342', strlen($result['result']['summary']));
 
         $this->assertEquals('Crime, Drama, Thriller', implode(', ', $result['result']['genres']));
-        $this->assertNull($result['result']['rating']);
-        $this->assertNull($result['result']['runtime']);
+        $this->assertEquals('TV-MA', $result['result']['rating']);
 
         $this->assertIsArray($result['result']['cast']);
         $this->assertCount(20, $result['result']['cast']);
@@ -118,14 +116,14 @@ class ExtractTest extends TestCase
         $search = new \Hooshid\MetacriticScraper\Metacritic();
         $result = $search->extract('/game/xbox-series-x/microsoft-flight-simulator');
         $this->assertIsArray($result);
-        $this->assertCount(19, $result['result']);
+        $this->assertCount(16, $result['result']);
 
         $this->assertEquals('https://www.metacritic.com/game/xbox-series-x/microsoft-flight-simulator', $result['result']['full_url']);
         $this->assertEquals('/game/xbox-series-x/microsoft-flight-simulator', $result['result']['url']);
         $this->assertEquals('microsoft-flight-simulator', $result['result']['url_slug']);
         $this->assertEquals('Microsoft Flight Simulator', $result['result']['title']);
-        $this->assertEquals('https://static.metacritic.com/images/products/games/7/1cc2e1878b4f5e9252f9f3b740e99125-98.jpg', $result['result']['thumbnail']);
-        $this->assertEquals('2021', $result['result']['release_year']);
+        $this->assertEquals('https://www.metacritic.com/a/img/resize/807f1c20645d87c13933b50ca95573a9aeca90bb/catalog/provider/6/12/6-1-762016-52.jpg?auto=webp&fit=crop&height=675&width=1200', $result['result']['thumbnail']);
+        $this->assertEquals('2020', $result['result']['release_year']);
         $this->assertEquals('game', $result['result']['type']);
 
         $this->assertGreaterThan(85, $result['result']['meta_score']);
@@ -138,13 +136,9 @@ class ExtractTest extends TestCase
 
         $this->assertEquals('From light planes to wide-body jets, fly highly detailed and accurate aircraft in the next generation of Microsoft Flight Simulator. Test your piloting skills against the challenges of night flying, real-time atmospheric simulation and live weather in a dynamic and living world.', $result['result']['summary']);
         $this->assertEquals('279', strlen($result['result']['summary']));
-        $this->assertEquals('Simulation, Flight, Civilian', implode(', ', $result['result']['genres']));
+        $this->assertEquals('Aircraft Sim', $result['result']['genres'][0]);
         $this->assertEquals('Asobo Studio', implode(', ', $result['result']['developers']));
-        $this->assertEquals('Microsoft Game Studios, Microsoft, Xbox Game Studios', implode(', ', $result['result']['publishers']));
-        $this->assertIsArray($result['result']['also_on']);
-        $this->assertCount(2, $result['result']['also_on']);
-        $this->assertEquals('https://www.gamefaqs.com/console/xbox-series-x/code/265963.html', $result['result']['cheat_url']);
-        $this->assertEquals('Xbox Series X', $result['result']['platform']);
+        $this->assertEquals('Xbox Game Studios', implode(', ', $result['result']['publishers']));
 
         $this->assertNull($result['error']);
     }

@@ -267,13 +267,6 @@ class Metacritic extends Base
             $mustSee = $html->findOneOrFalse('.c-productScoreInfo_must');
             $userScore = $this->cleanString($html->find('.c-productHero_scoreInfo > .c-productScoreInfo .c-siteReviewScore span', 0)->text());
             $userScoreVotesCount = $this->cleanString($html->find('.c-productHero_scoreInfo > .c-productScoreInfo .c-productScoreInfo_reviewsTotal span', 0)->text());
-
-            // extract scores
-            if ($type != "movie" and $type != "tv") {
-                $mustSee = $html->findOneOrFalse('.must_play.product');
-                $userScore = $html->find('.feature_userscore .metascore_w', 0)->text();
-                $userScoreVotesCount = $html->find('.feature_userscore .count a', 0)->text();
-            }
         }
 
         $output = [];
@@ -289,7 +282,7 @@ class Metacritic extends Base
         $output['user_score'] = isset($userScore) ? (float)$userScore : null;
         $output['user_votes'] = isset($userScoreVotesCount) ? $this->getNumbers($userScoreVotesCount) : null;
         $output['summary'] = $this->cleanString($summary, 'Summary:');
-
+        $output['genres'] = $genres;
 
         if ($type == "movie" or $type == "tv") {
             $output['must_see'] = (bool)$mustSee;
@@ -347,33 +340,14 @@ class Metacritic extends Base
                     }
                 }
             }
-        }
-
-        $output['genres'] = $genres;
-
-        if ($type == "music") {
+        } elseif ($type == "music") {
             $output['artist'] = $html->find('.product_artist a span', 0)->text();
-        }
-
-        /*
-
-
-        if ($type == "game") {
+        } elseif ($type == "game") {
             $output['must_play'] = (bool)$mustSee;
-            $output['developers'] = $html->find('li.developer a')->text();
-            $output['publishers'] = $html->find('li.publisher a')->text();
-
-            $i = 0;
-            foreach ($html->find('li.product_platforms a') as $element) {
-                $output['also_on'][$i]['title'] = trim($element->plaintext);
-                $output['also_on'][$i]['url'] = trim($element->href);
-                $i++;
-            }
-
-            $output['cheat_url'] = $html->find('li.product_cheats a', 0)->href;
-            $output['platform'] = $html->find('.product_title .platform a', 0)->text();
+            $output['developers'] = $html->find('.c-gameDetails_Developer ul li')->text();
+            $output['publishers'] = $html->find('.c-gameDetails_Distributor .g-outer-spacing-left-medium-fluid')->text();
+            $output['genres'] = $html->find('.c-gameDetails_sectionContainer ul li span')->text();
         }
-*/
 
         return [
             'result' => $output,

@@ -164,7 +164,11 @@ if (isset($_GET["output"])) {
                     <?php if (isset($result['director']) and !empty($result['director'])) { ?>
                         <tr>
                             <td><b>Director:</b></td>
-                            <td><?php echo implode(' and ', $result['director']); ?></td>
+                            <td>
+                                <?php foreach ($result['director'] as $cast) { ?>
+                                    <a href="person.php?url=<?php echo $cast['url_slug']; ?>"><?php echo $cast['name']; ?></a>,
+                                <?php } ?>
+                            </td>
                         </tr>
                     <?php } ?>
 
@@ -188,16 +192,8 @@ if (isset($_GET["output"])) {
                         </tr>
                     <?php } ?>
 
-                    <!-- Runtime -->
-                    <?php if (isset($result['runtime'])) { ?>
-                        <tr>
-                            <td><b>Runtime:</b></td>
-                            <td><?php echo $result['runtime']; ?></td>
-                        </tr>
-                    <?php } ?>
-
                     <!--------------------------------- For music --------------------------------->
-                    <!-- Developers -->
+                    <!-- Artist -->
                     <?php if (isset($result['artist'])) { ?>
                         <tr>
                             <td><b>Artist:</b></td>
@@ -206,14 +202,6 @@ if (isset($_GET["output"])) {
                     <?php } ?>
 
                     <!--------------------------------- For game --------------------------------->
-                    <!-- Platform -->
-                    <?php if (isset($result['platform']) and !empty($result['platform'])) { ?>
-                        <tr>
-                            <td><b>Platform:</b></td>
-                            <td><?php echo $result['platform']; ?></td>
-                        </tr>
-                    <?php } ?>
-
                     <!-- Developers -->
                     <?php if (isset($result['developers']) and !empty($result['developers'])) { ?>
                         <tr>
@@ -227,26 +215,6 @@ if (isset($_GET["output"])) {
                         <tr>
                             <td><b>Publishers:</b></td>
                             <td><?php echo implode(', ', $result['publishers']); ?></td>
-                        </tr>
-                    <?php } ?>
-
-                    <!-- Also on other platform -->
-                    <?php if (isset($result['also_on']) and !empty($result['also_on'])) { ?>
-                        <tr>
-                            <td><b>Also on:</b></td>
-                            <td class="menu-links">
-                                <?php foreach ($result['also_on'] as $platform) { ?>
-                                    <a href="extract.php?url=<?php echo $platform['url']; ?>"><?php echo $platform['title']; ?></a>
-                                <?php } ?>
-                            </td>
-                        </tr>
-                    <?php } ?>
-
-                    <!-- Cheat Url -->
-                    <?php if (isset($result['cheat_url']) and !empty($result['cheat_url'])) { ?>
-                        <tr>
-                            <td><b>Cheat Url:</b></td>
-                            <td><?php echo $result['cheat_url']; ?></td>
                         </tr>
                     <?php } ?>
 
