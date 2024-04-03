@@ -8,47 +8,6 @@ use voku\helper\HtmlDomParser;
 
 class Metacritic extends Base
 {
-    protected $baseUrl = 'https://www.metacritic.com';
-
-    protected $searchTypes = ['all', 'movie', 'game', 'album', 'music', 'tv', 'person', 'video', 'company', 'story'];
-
-    protected $searchSorts = ['relevancy', 'score', 'recent'];
-
-    /**
-     * Helper function for get meta score class
-     *
-     * @param $str
-     * @return string
-     */
-    protected function getScoreClass($str): string
-    {
-        if (stripos($str, "positive") !== false) {
-            return "positive";
-        } elseif (stripos($str, "mixed") !== false) {
-            return "mixed";
-        } elseif (stripos($str, "negative") !== false) {
-            return "negative";
-        }
-
-        return "tbd";
-    }
-
-    /**
-     * get type of page or result
-     *
-     * @param $type
-     * @return string|null
-     */
-    protected function getType($type): ?string
-    {
-        foreach ($this->searchTypes as $loop) {
-            if ($loop == $type) {
-                return $loop;
-            }
-        }
-
-        return null;
-    }
 
     /**
      * Search on metacritic
@@ -70,57 +29,51 @@ class Metacritic extends Base
         }
 
         $search = str_replace("/", " ", $search);
-        $response = $this->getContentPage($this->baseUrl . '/search/' . $type . '/' . urlencode($search) . '/results?sort=' . $sort . '&page=' . $page);
+        //$response = $this->getContentPage(/results?sort=' . $sort);
+        $mcoTypeId = null;
+        if ($type == "movie") {
+            $mcoTypeId = 2;
+        } elseif ($type == "tv") {
+            $mcoTypeId = 1;
+        } elseif ($type == "person") {
+            $mcoTypeId = 3;
+        } elseif ($type == "game") {
+            $mcoTypeId = 13;
+        }
+        $response = $this->getContentPage("https://internal-prod.apigee.fandom.net/v1/xapi/finder/metacritic/search/" . urlencode($search) . "/web?apiKey=1MOZgmNFxvmljaQR1X9KAij9Mo4xAY3u&offset=" . ($page * 100) . "&limit=100&componentName=search&componentDisplayName=Search&componentType=SearchResults&sortDirection=DESC&mcoTypeId=".$mcoTypeId);
         $html = HtmlDomParser::str_get_html($response);
-        $baseContent = $html->find('.module.search_results', 0);
-        $notFound = $baseContent->findOneOrFalse('li.result');
-
-
+        $last_page = 0;
         $output = [];
-        if ($notFound !== false) {
-            $i = 0;
-            foreach ($baseContent->find('li.result') as $e) {
-                $url = $e->find('a', 0)->getAttribute('href');
-                $thumbnail = $e->find('.result_thumbnail img', 0)->getAttribute('src');
-                if (stripos($thumbnail, "http") === false) {
-                    $thumbnail = null;
-                }
-
-                $itemInfo = $e->find('.main_stats p', 0)->text();
-                $itemInfo = strtolower($this->cleanString($itemInfo));
-                $itemInfo = str_replace("tv show", "tv", $itemInfo);
-
-                if (preg_match("/(\d{4})/", $itemInfo, $matches)) {
-                    $year = (int)$matches[1];
-                }
-
-                $metaScore = $this->cleanString($e->find('.main_stats .metascore_w', 0)->text());
-                preg_match("/(\w+)/", $url, $type);
-                if (stripos($url, "trailers") !== false) {
-                    $type[1] = "video";
-                }
-
-                $output[$i]['full_url'] = $this->baseUrl . $url;
-                $output[$i]['url'] = $url;
-                $output[$i]['url_slug'] = $this->afterLast($url);
-                $output[$i]['title'] = $this->cleanString($e->find('.product_title', 0)->text());
-                $output[$i]['description'] = $this->cleanString($e->find('.deck', 0)->text());
-                $output[$i]['thumbnail'] = $thumbnail;
-                $output[$i]['year'] = $year ?? null;
-                $output[$i]['type'] = $this->getType($type[1]);
-                $output[$i]['meta_score'] = isset($metaScore) ? (int)$metaScore : null;
-                $output[$i]['must_see'] = (bool)$e->findOneOrFalse('.main_stats .must-see');
-                $output[$i]['score_class'] = $this->getScoreClass($e->find('.main_stats .metascore_w', 0)->getAttribute('class'));
-                $i++;
+        try {
+            $resultJson = json_decode($html);
+            $last_page = $resultJson->links->last->meta->pageNum;
+            foreach ($resultJson->data->items as $e) {
+                $url = '/' . $this->getType($e->type) . '/' . $e->slug;
+                $thumbnail = null;
+                $output[] = [
+                    'full_url' => $this->baseUrl . $url,
+                    'url' => $url,
+                    'url_slug' => $e->slug,
+                    'title' => $this->cleanString($e->title),
+                    'description' => $this->cleanString($e->description),
+                    'thumbnail' => $thumbnail,
+                    'year' => isset($e->premiereYear) & $e->premiereYear > 0 ? (int)$e->premiereYear : null,
+                    'type' => $this->getType($e->type),
+                    'meta_score' => isset($e->criticScoreSummary->score) ? (int)$e->criticScoreSummary->score : null,
+                    'must_see' => (bool)$e->mustSee,
+                    'score_class' => $this->getScoreClassByScore($e->criticScoreSummary->score),
+                ];
             }
+        } catch (Exception $exception) {
+            $output = [];
         }
 
         return [
             'results' => $output,
             'paginate' => [
                 'current_page' => $page,
-                'last_page' => (int)$html->find('.pages .last_page .page_num', 0)->text(),
-                'per_page' => 10,
+                'last_page' => (int)$last_page,
+                'per_page' => 100,
             ],
         ];
     }
@@ -355,6 +308,12 @@ class Metacritic extends Base
         ];
     }
 
+    /**
+     * Extract person data (actor, director and ...)
+     *
+     * @param $url
+     * @return array
+     */
     public function person($url): array
     {
         if (!strpos($url, 'person')) {

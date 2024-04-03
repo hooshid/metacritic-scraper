@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-class PersonTestOk extends TestCase
+class PersonTest extends TestCase
 {
     public function testPerson()
     {

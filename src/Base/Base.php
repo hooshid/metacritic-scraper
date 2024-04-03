@@ -6,6 +6,12 @@ namespace Hooshid\MetacriticScraper\Base;
 
 class Base
 {
+    protected $baseUrl = 'https://www.metacritic.com';
+
+    protected $searchTypes = ['all', 'movie', 'game', 'album', 'music', 'tv', 'person', 'video', 'company', 'story'];
+
+    protected $searchSorts = ['relevancy', 'score', 'recent'];
+
     /**
      * Get html content
      *
@@ -34,6 +40,9 @@ class Base
      */
     protected function cleanString($str, $remove = null): ?string
     {
+        if (empty($str)) {
+            return null;
+        }
         if (!empty($remove)) {
             $str = str_replace($remove, "", $str);
         }
@@ -101,6 +110,70 @@ class Base
         //preg_match('#<script type="application/ld\+json">(.+?)</script>#ims', $html, $matches);
         if (empty($matches[1])) return [];
         return json_decode($matches[1]);
+    }
+
+    /**
+     * get type of page or result
+     *
+     * @param $type
+     * @return string|null
+     */
+    protected function getType($type): ?string
+    {
+        if ($type == "show") {
+            return "tv";
+        } else if ($type == "game-title") {
+            return "game";
+        } else if ($type == "trailers") {
+            return "video";
+        }
+
+        foreach ($this->searchTypes as $loop) {
+            if ($loop == $type) {
+                return $loop;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Helper function for get meta score class
+     *
+     * @param $str
+     * @return string
+     */
+    protected function getScoreClass($str): string
+    {
+        if (stripos($str, "positive") !== false) {
+            return "positive";
+        } elseif (stripos($str, "mixed") !== false) {
+            return "mixed";
+        } elseif (stripos($str, "negative") !== false) {
+            return "negative";
+        }
+
+        return "tbd";
+    }
+
+
+    /**
+     * Helper function for get meta score class
+     *
+     * @param $score
+     * @return string
+     */
+    protected function getScoreClassByScore($score): string
+    {
+        if ($score >= 61) {
+            return "positive";
+        } elseif ($score >= 40) {
+            return "mixed";
+        } elseif ($score >= 0) {
+            return "negative";
+        }
+
+        return "tbd";
     }
 
 }
