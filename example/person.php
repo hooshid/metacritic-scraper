@@ -47,6 +47,8 @@ if (isset($_GET["output"])) {
                 <a href="person.php?url=bryan-cranston">Bryan Cranston</a>
                 <a href="person.php?url=keanu-reeves">Keanu Reeves</a>
                 <a href="person.php?url=george-rr-martin">George R.R. Martin</a>
+                <a href="person.php?url=emma-watson">Emma Watson</a>
+                <a href="person.php?url=florence-pugh">Florence Pugh</a>
             </div>
 
             <div class="col-75">

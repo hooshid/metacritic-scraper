@@ -29,7 +29,7 @@ class Metacritic extends Base
         }
 
         $search = str_replace("/", " ", $search);
-        //$response = $this->getContentPage(/results?sort=' . $sort);
+
         $mcoTypeId = null;
         if ($type == "movie") {
             $mcoTypeId = 2;
