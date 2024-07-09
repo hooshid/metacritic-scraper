@@ -1,6 +1,6 @@
 # Metacritic Scraper
 
-<a href="https://github.com/hooshid/metacritic-scraper/actions"><img src="https://github.com/hooshid/metacritic-scraper/workflows/tests/badge.svg" alt="Build Status"></a>
+<a href="https://github.com/hooshid/metacritic-scraper/actions"><img src="https://github.com/hooshid/metacritic-scraper/actions/workflows/tests.yml/badge.svg" alt="Build Status"></a>
 <a href="https://packagist.org/packages/hooshid/metacritic-scraper"><img src="https://img.shields.io/packagist/dt/hooshid/metacritic-scraper" alt="Total Downloads"></a>
 <a href="https://packagist.org/packages/hooshid/metacritic-scraper"><img src="https://img.shields.io/packagist/v/hooshid/metacritic-scraper" alt="Latest Stable Version"></a>
 <a href="LICENSE.md"><img src="https://img.shields.io/packagist/l/hooshid/metacritic-scraper" alt="License"></a>
