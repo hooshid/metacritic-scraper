@@ -21,15 +21,15 @@ class ExtractTest extends TestCase
 
         $this->assertGreaterThan(70, $result['result']['meta_score']);
         $this->assertLessThan(75, $result['result']['meta_score']);
-        $this->assertGreaterThan(34, $result['result']['meta_votes']);
+        $this->assertGreaterThan(35, $result['result']['meta_votes']);
 
         $this->assertGreaterThan(8.5, $result['result']['user_score']);
         $this->assertLessThan(9.5, $result['result']['user_score']);
-        $this->assertGreaterThan(1700, $result['result']['user_votes']);
+        $this->assertGreaterThan(1900, $result['result']['user_votes']);
 
-        $this->assertFalse($result['result']['must_see']);
         $this->assertEquals('A computer hacker (Keanu Reeves) learns that his entire life has been a virtual dream, orchestrated by a strange class of computer overlords in the far future. He joins a resistance movement to free humanity from lives of computerized brainwashing.', $result['result']['summary']);
         $this->assertEquals('Action, Sci-Fi', implode(', ', $result['result']['genres']));
+        $this->assertFalse($result['result']['must_see']);
         $this->assertEquals('R', $result['result']['rating']);
 
         $this->assertIsArray($result['result']['cast']);
@@ -38,6 +38,9 @@ class ExtractTest extends TestCase
         $this->assertEquals('Keanu Reeves', $result['result']['cast'][0]['name']);
         $this->assertEquals('https://www.metacritic.com/person/keanu-reeves', $result['result']['cast'][0]['full_url']);
         $this->assertEquals('keanu-reeves', $result['result']['cast'][0]['url_slug']);
+
+        $this->assertIsArray($result['result']['director']);
+        $this->assertCount(2, $result['result']['director']);
 
         $this->assertNull($result['error']);
     }
@@ -63,83 +66,33 @@ class ExtractTest extends TestCase
 
         $this->assertGreaterThan(9, $result['result']['user_score']);
         $this->assertLessThan(9.5, $result['result']['user_score']);
-        $this->assertGreaterThan(825, $result['result']['user_votes']);
+        $this->assertGreaterThan(17700, $result['result']['user_votes']);
 
-        $this->assertTrue($result['result']['must_see']);
         $this->assertEquals('342', strlen($result['result']['summary']));
-
         $this->assertEquals('Crime, Drama, Thriller', implode(', ', $result['result']['genres']));
+        $this->assertTrue($result['result']['must_see']);
         $this->assertEquals('TV-MA', $result['result']['rating']);
 
         $this->assertIsArray($result['result']['cast']);
         $this->assertCount(20, $result['result']['cast']);
+
         $this->assertEquals('Bryan Cranston', $result['result']['cast'][0]['name']);
         $this->assertEquals('https://www.metacritic.com/person/bryan-cranston', $result['result']['cast'][0]['full_url']);
         $this->assertEquals('bryan-cranston', $result['result']['cast'][0]['url_slug']);
 
-        $this->assertNull($result['error']);
-    }
-
-    public function testExtractMusic()
-    {
-        $search = new \Hooshid\MetacriticScraper\Metacritic();
-        $result = $search->extract('/music/happier-than-ever/billie-eilish');
-        $this->assertIsArray($result);
-        $this->assertCount(14, $result['result']);
-
-        $this->assertEquals('https://www.metacritic.com/music/happier-than-ever/billie-eilish', $result['result']['full_url']);
-        $this->assertEquals('/music/happier-than-ever/billie-eilish', $result['result']['url']);
-        $this->assertEquals('billie-eilish', $result['result']['url_slug']);
-        $this->assertEquals('Happier than Ever', $result['result']['title']);
-        $this->assertEquals('https://static.metacritic.com/images/products/music/4/35acaa79ec2e95dd3efa0e581a845970-98.jpg', $result['result']['thumbnail']);
-        $this->assertEquals('2021', $result['result']['release_year']);
-        $this->assertEquals('music', $result['result']['type']);
-
-        $this->assertGreaterThan(85, $result['result']['meta_score']);
-        $this->assertLessThan(90, $result['result']['meta_score']);
-        $this->assertGreaterThan(25, $result['result']['meta_votes']);
-
-        $this->assertGreaterThan(8, $result['result']['user_score']);
-        $this->assertLessThan(9, $result['result']['user_score']);
-        $this->assertGreaterThan(820, $result['result']['user_votes']);
-
-        $this->assertEquals('The second full-length studio release for the Los Angeles pop singer-songwriter was produced by her brother, Finneas.', $result['result']['summary']);
-        $this->assertEquals('117', strlen($result['result']['summary']));
-        $this->assertEquals('Pop/Rock', implode(', ', $result['result']['genres']));
-        $this->assertEquals('Billie Eilish', $result['result']['artist']);
+        $this->assertIsArray($result['result']['director']);
+        $this->assertCount(1, $result['result']['director']);
 
         $this->assertNull($result['error']);
     }
 
-    public function testExtractGame()
+    public function testMovieNotFound()
     {
         $search = new \Hooshid\MetacriticScraper\Metacritic();
-        $result = $search->extract('/game/xbox-series-x/microsoft-flight-simulator');
+        $result = $search->extract('/tv/not-found');
         $this->assertIsArray($result);
-        $this->assertCount(16, $result['result']);
+        $this->assertCount(3, $result['result']);
 
-        $this->assertEquals('https://www.metacritic.com/game/xbox-series-x/microsoft-flight-simulator', $result['result']['full_url']);
-        $this->assertEquals('/game/xbox-series-x/microsoft-flight-simulator', $result['result']['url']);
-        $this->assertEquals('microsoft-flight-simulator', $result['result']['url_slug']);
-        $this->assertEquals('Microsoft Flight Simulator', $result['result']['title']);
-        $this->assertEquals('https://www.metacritic.com/a/img/resize/807f1c20645d87c13933b50ca95573a9aeca90bb/catalog/provider/6/12/6-1-762016-52.jpg?auto=webp&fit=crop&height=675&width=1200', $result['result']['thumbnail']);
-        $this->assertEquals('2020', $result['result']['release_year']);
-        $this->assertEquals('game', $result['result']['type']);
-
-        $this->assertGreaterThan(85, $result['result']['meta_score']);
-        $this->assertLessThan(95, $result['result']['meta_score']);
-        $this->assertGreaterThan(29, $result['result']['meta_votes']);
-
-        $this->assertGreaterThan(7, $result['result']['user_score']);
-        $this->assertLessThan(9, $result['result']['user_score']);
-        $this->assertGreaterThan(277, $result['result']['user_votes']);
-
-        $this->assertEquals('From light planes to wide-body jets, fly highly detailed and accurate aircraft in the next generation of Microsoft Flight Simulator. Test your piloting skills against the challenges of night flying, real-time atmospheric simulation and live weather in a dynamic and living world.', $result['result']['summary']);
-        $this->assertEquals('279', strlen($result['result']['summary']));
-        $this->assertEquals('Aircraft Sim', $result['result']['genres'][0]);
-        $this->assertEquals('Asobo Studio', implode(', ', $result['result']['developers']));
-        $this->assertEquals('Xbox Game Studios', implode(', ', $result['result']['publishers']));
-
-        $this->assertNull($result['error']);
+        $this->assertEquals(404, $result['error']);
     }
 }

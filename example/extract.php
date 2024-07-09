@@ -51,18 +51,6 @@ if (isset($_GET["output"])) {
                 <a href="extract.php?url=/tv/game-of-thrones">Game of Thrones</a>
                 <a href="extract.php?url=/tv/breaking-bad">Breaking Bad</a>
                 <a href="extract.php?url=/tv/chernobyl">Chernobyl</a>
-
-                <div class="menu-links-title">Music</div>
-                <a href="extract.php?url=/music/happier-than-ever/billie-eilish">Billie Eilish - Happier than Ever</a>
-                <a href="extract.php?url=/music/revival/selena-gomez">Selena Gomez - Revival</a>
-                <a href="extract.php?url=/music/when-the-sun-goes-down-2011/selena-gomez-the-scene">Selena Gomez & the
-                    Scene - When the Sun Goes Down</a>
-
-                <div class="menu-links-title">Game</div>
-                <a href="extract.php?url=/game/xbox-series-x/microsoft-flight-simulator">Microsoft Flight Simulator -
-                    2021</a>
-                <a href="extract.php?url=/game/switch/ender-lilies-quietus-of-the-knights">ENDER LILIES: Quietus of the
-                    Knights - 2021</a>
             </div>
 
             <div class="col-75">
@@ -131,18 +119,6 @@ if (isset($_GET["output"])) {
                         </tr>
                     <?php } ?>
 
-                    <!-- Must Play (on game) -->
-                    <?php if (isset($result['must_play'])) { ?>
-                        <tr>
-                            <td><b>Must Play?</b></td>
-                            <td><?php if ($result['must_play']) {
-                                    echo "Yes";
-                                } else {
-                                    echo "No";
-                                } ?></td>
-                        </tr>
-                    <?php } ?>
-
                     <!-- Summary -->
                     <?php if ($result['summary']) { ?>
                         <tr>
@@ -159,7 +135,6 @@ if (isset($_GET["output"])) {
                         </tr>
                     <?php } ?>
 
-                    <!--------------------------------- For movie & tv --------------------------------->
                     <!-- Director -->
                     <?php if (isset($result['director']) and !empty($result['director'])) { ?>
                         <tr>
@@ -191,33 +166,6 @@ if (isset($_GET["output"])) {
                             <td><?php echo $result['rating']; ?></td>
                         </tr>
                     <?php } ?>
-
-                    <!--------------------------------- For music --------------------------------->
-                    <!-- Artist -->
-                    <?php if (isset($result['artist'])) { ?>
-                        <tr>
-                            <td><b>Artist:</b></td>
-                            <td><?php echo $result['artist']; ?></td>
-                        </tr>
-                    <?php } ?>
-
-                    <!--------------------------------- For game --------------------------------->
-                    <!-- Developers -->
-                    <?php if (isset($result['developers']) and !empty($result['developers'])) { ?>
-                        <tr>
-                            <td><b>Developers:</b></td>
-                            <td><?php echo implode(', ', $result['developers']); ?></td>
-                        </tr>
-                    <?php } ?>
-
-                    <!-- Publishers -->
-                    <?php if (isset($result['publishers']) and !empty($result['publishers'])) { ?>
-                        <tr>
-                            <td><b>Publishers:</b></td>
-                            <td><?php echo implode(', ', $result['publishers']); ?></td>
-                        </tr>
-                    <?php } ?>
-
                 </table>
             </div>
         </div>

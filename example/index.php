@@ -25,22 +25,8 @@
                 <select id="type" name="type" class="form-field">
                     <option value="all">All Items</option>
                     <option value="movie">Movies</option>
-                    <option value="game">Games</option>
-                    <option value="album">Albums</option>
                     <option value="tv">Tv Shows</option>
                     <option value="person">Person</option>
-                    <option value="video">Trailers</option>
-                    <option value="company">Companies</option>
-                    <option value="story">Reports</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="sort">Sort:</label>
-                <select id="sort" name="sort" class="form-field">
-                    <option value="relevancy">Relevancy</option>
-                    <option value="score">Score</option>
-                    <option value="recent">Most Recent</option>
                 </select>
             </div>
 
@@ -48,7 +34,6 @@
                 <input type="submit" value="Search">
             </div>
         </form>
-
     </div>
 
     <div class="boxed" style="max-width: 700px;">

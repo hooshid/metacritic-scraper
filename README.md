@@ -6,7 +6,7 @@
 <a href="LICENSE.md"><img src="https://img.shields.io/packagist/l/hooshid/metacritic-scraper" alt="License"></a>
 
 
-Using this Metacritic API, you are able to search, browse and extract data of movies, tv series, musics and games on metacritic.com.
+Using this Metacritic API, you are able to search, browse and extract data of movies and tv series on metacritic.com.
 
 ## Install
 This library scrapes metacritic.com so changes their site can cause parts of this library to fail. You will probably need to update a few times a year.
@@ -93,7 +93,6 @@ $result = $metacritic->search("it", 0, "movie");
       "url_slug": "it",
       "title": "It",
       "description": "When children begin to disappear in the town of Derry, Maine, a group of young kids are faced with their biggest fears when they square off against an evil clown named Pennywise, whose history of...",
-      "thumbnail": "https://static.metacritic.com/images/products/movies/8/ae92ae06d681d7eb2b0374d47787f3f8-78.jpg",
       "year": 2017,
       "type": "movie",
       "meta_score": 69,
@@ -113,7 +112,7 @@ $result = $metacritic->search("it", 0, "movie");
 ```
 in above example we give 2 new param to method, $page must be integer as paginate.
 
-$type by default return all, but you can specify this param to (all, movie, tv, game, album, music, person, video, company, story)
+$type by default return all, but you can specify this param to (all, movie, tv, person)
 
 ### Full examples
 just open the example folder, we put all examples and methods demo for you in there!
