@@ -8,9 +8,7 @@ class Base
 {
     protected $baseUrl = 'https://www.metacritic.com';
 
-    protected $searchTypes = ['all', 'movie', 'game', 'album', 'music', 'tv', 'person', 'video', 'company', 'story'];
-
-    protected $searchSorts = ['relevancy', 'score', 'recent'];
+    protected $searchTypes = ['all', 'movie', 'tv', 'person'];
 
     /**
      * Get html content
