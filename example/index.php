@@ -63,10 +63,6 @@
 
             <a href="/example/person.php?url=tom-cruise">Person - Tom Cruise</a>
             <a href="/example/person.php?url=keanu-reeves">Person - Keanu Reeves</a>
-
-            <a href="/example/browse.php?url=/browse/movies/score/metascore/all/filtered?sort=desc">Browse lists - Best Movies of All Time</a>
-            <a href="/example/browse.php?url=/browse/tv/score/metascore/all/filtered?sort=desc">Browse lists - Best TV Shows of All Time</a>
-            <a href="/example/browse.php?url=/browse/albums/score/metascore/all/filtered?sort=desc">Browse lists - Best Albums of All Time</a>
         </div>
     </div>
 </div>

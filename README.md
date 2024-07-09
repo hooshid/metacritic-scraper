@@ -69,7 +69,7 @@ if ($error) {
     echo number_format($result['user_votes']); // User Votes
 }
 ```
-you must always catch error first and get results.
+you must always catch error first then get results.
 
 ### Search
 
