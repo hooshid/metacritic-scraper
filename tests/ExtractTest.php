@@ -7,40 +7,40 @@ class ExtractTest extends TestCase
     public function testExtractMovie()
     {
         $search = new \Hooshid\MetacriticScraper\Metacritic();
-        $result = $search->extract('/movie/the-matrix');
+        $result = $search->extract('/movie/the-lord-of-the-rings-the-fellowship-of-the-ring');
         $this->assertIsArray($result);
         $this->assertCount(17, $result['result']);
 
-        $this->assertEquals('https://www.metacritic.com/movie/the-matrix', $result['result']['full_url']);
-        $this->assertEquals('/movie/the-matrix', $result['result']['url']);
-        $this->assertEquals('the-matrix', $result['result']['url_slug']);
-        $this->assertEquals('The Matrix', $result['result']['title']);
-        $this->assertEquals('https://www.metacritic.com/a/img/resize/7bd4e84a57871f38af5ac241aff388887162c5f2/catalog/provider/2/13/2-82ec049fbb9bc9bc3601207e06a81f5f.jpg?auto=webp&fit=crop&height=675&width=1200', $result['result']['thumbnail']);
-        $this->assertEquals('1999', $result['result']['release_year']);
+        $this->assertEquals('https://www.metacritic.com/movie/the-lord-of-the-rings-the-fellowship-of-the-ring', $result['result']['full_url']);
+        $this->assertEquals('/movie/the-lord-of-the-rings-the-fellowship-of-the-ring', $result['result']['url']);
+        $this->assertEquals('the-lord-of-the-rings-the-fellowship-of-the-ring', $result['result']['url_slug']);
+        $this->assertEquals('The Lord of the Rings: The Fellowship of the Ring', $result['result']['title']);
+        $this->assertEquals('https://www.metacritic.com/a/img/resize/500cbedde2bb6b6c3d6f009550f32a044536d555/catalog/provider/2/13/2-5a34b4bbf494b7f675aba4f842086128.jpg?auto=webp&fit=crop&height=675&width=1200', $result['result']['thumbnail']);
+        $this->assertEquals('2001', $result['result']['release_year']);
         $this->assertEquals('movie', $result['result']['type']);
 
-        $this->assertGreaterThan(70, $result['result']['meta_score']);
-        $this->assertLessThan(75, $result['result']['meta_score']);
-        $this->assertGreaterThan(35, $result['result']['meta_votes']);
+        $this->assertGreaterThan(90, $result['result']['meta_score']);
+        $this->assertLessThan(95, $result['result']['meta_score']);
+        $this->assertGreaterThan(30, $result['result']['meta_votes']);
 
         $this->assertGreaterThan(8.5, $result['result']['user_score']);
         $this->assertLessThan(9.5, $result['result']['user_score']);
-        $this->assertGreaterThan(1900, $result['result']['user_votes']);
+        $this->assertGreaterThan(2600, $result['result']['user_votes']);
 
-        $this->assertEquals('A computer hacker (Keanu Reeves) learns that his entire life has been a virtual dream, orchestrated by a strange class of computer overlords in the far future. He joins a resistance movement to free humanity from lives of computerized brainwashing.', $result['result']['summary']);
-        $this->assertEquals('Action, Sci-Fi', implode(', ', $result['result']['genres']));
-        $this->assertFalse($result['result']['must_see']);
-        $this->assertEquals('R', $result['result']['rating']);
+        $this->assertEquals('239', strlen($result['result']['summary']));
+        $this->assertEquals('Action, Adventure, Drama, Fantasy', implode(', ', $result['result']['genres']));
+        $this->assertTrue($result['result']['must_see']);
+        $this->assertEquals('PG-13', $result['result']['rating']);
 
         $this->assertIsArray($result['result']['cast']);
         $this->assertCount(20, $result['result']['cast']);
 
-        $this->assertEquals('Keanu Reeves', $result['result']['cast'][0]['name']);
-        $this->assertEquals('https://www.metacritic.com/person/keanu-reeves', $result['result']['cast'][0]['full_url']);
-        $this->assertEquals('keanu-reeves', $result['result']['cast'][0]['url_slug']);
+        $this->assertEquals('Elijah Wood', $result['result']['cast'][0]['name']);
+        $this->assertEquals('https://www.metacritic.com/person/elijah-wood', $result['result']['cast'][0]['full_url']);
+        $this->assertEquals('elijah-wood', $result['result']['cast'][0]['url_slug']);
 
         $this->assertIsArray($result['result']['director']);
-        $this->assertCount(2, $result['result']['director']);
+        $this->assertCount(1, $result['result']['director']);
 
         $this->assertNull($result['error']);
     }
@@ -89,7 +89,7 @@ class ExtractTest extends TestCase
     public function testMovieNotFound()
     {
         $search = new \Hooshid\MetacriticScraper\Metacritic();
-        $result = $search->extract('/tv/not-found');
+        $result = $search->extract('/movie/not-found');
         $this->assertIsArray($result);
         $this->assertCount(3, $result['result']);
 
