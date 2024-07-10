@@ -228,6 +228,9 @@ class Metacritic extends Base
             or $html->findOneOrFalse('.c-error404')) {
             $error = 404;
         } else if ($pageTitle == 'Service Unavailable'
+            or $pageTitle == ' - Metacritic'
+            or trim($pageTitle) == '- Metacritic'
+            or trim($pageTitle) == 'Metacritic'
             or strpos($pageTitle, 'Service Unavailable') !== false
             or strpos($pageTitle, 'Error') !== false
             or $html->findOneOrFalse('.error_title')
