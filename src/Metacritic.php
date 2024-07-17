@@ -48,6 +48,7 @@ class Metacritic extends Base
                     'url' => $url,
                     'url_slug' => $e->slug,
                     'title' => $this->cleanString($e->title),
+                    'thumbnail' => null,
                     'description' => $this->cleanString($e->description),
                     'year' => isset($e->premiereYear) & $e->premiereYear > 0 ? (int)$e->premiereYear : null,
                     'type' => $this->getType($e->type),
@@ -119,8 +120,16 @@ class Metacritic extends Base
             }
 
             $summary = $this->cleanString($json->description);
-            $metaScore = $this->cleanString($json->aggregateRating->ratingValue);
-            $metaScoreVotesCount = $this->cleanString($json->aggregateRating->reviewCount);
+
+            try {
+                if (!empty($json->aggregateRating)) {
+                    $metaScore = $this->cleanString($json->aggregateRating->ratingValue);
+                    $metaScoreVotesCount = $this->cleanString($json->aggregateRating->reviewCount);
+                }
+            } catch (\Exception $e){
+
+            }
+
             $mustSee = $html->findOneOrFalse('.c-productScoreInfo_must');
             $userScore = $this->cleanString($html->find('.c-productHero_scoreInfo > .c-productScoreInfo .c-siteReviewScore span', 0)->text());
             $userScoreVotesCount = $this->cleanString($html->find('.c-productHero_scoreInfo > .c-productScoreInfo .c-productScoreInfo_reviewsTotal span', 0)->text());
