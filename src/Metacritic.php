@@ -109,14 +109,13 @@ class Metacritic extends Base
 
             $json = $this->jsonLD($response);
             $title = $this->cleanString($json->name);
+            $thumbnail = null;
             $genres = $json->genre;
-            $thumbnail = $this->cleanString($json->image);
-            if (stripos($thumbnail, "http") === false) {
-                $thumbnail = null;
-            }
 
             if (preg_match("/(\d{4})/", $this->cleanString($json->datePublished), $matches)) {
-                $releaseYear = $matches[1];
+                if ($matches[1] != "0000") {
+                    $releaseYear = $matches[1];
+                }
             }
 
             $summary = $this->cleanString($json->description);
@@ -126,7 +125,14 @@ class Metacritic extends Base
                     $metaScore = $this->cleanString($json->aggregateRating->ratingValue);
                     $metaScoreVotesCount = $this->cleanString($json->aggregateRating->reviewCount);
                 }
-            } catch (\Exception $e){
+
+                if (!empty($json->image)) {
+                    $thumbnail = $this->cleanString($json->image);
+                    if ($thumbnail and stripos($thumbnail, "http") === false) {
+                        $thumbnail = null;
+                    }
+                }
+            } catch (\Exception $e) {
 
             }
 
