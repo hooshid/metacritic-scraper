@@ -225,20 +225,26 @@ class Metacritic extends Base
             $url = "/person/" . $url;
         }
 
-        $response = $this->getContentPage($this->baseUrl . $url . "/?sort-options=date&filter=shows");
-        $html = HtmlDomParser::str_get_html($response);
-        $pageTitle = $this->cleanString($html->find('title', 0)->text());
-        $pageTitle = trim(str_replace('- Metacritic', '', $pageTitle));
-        $error = null;
-
         $output = [];
         $output['full_url'] = $this->baseUrl . $url;
         $output['url_slug'] = $this->afterLast($url);
         $output['name'] = null;
         $output['movies'] = [];
         $output['series'] = [];
+        $html = null;
+        $error = null;
+        $pageTitle = null;
 
-        if ($pageTitle == 'Page Not Found'
+        $response = $this->getContentPage($this->baseUrl . $url . "/?sort-options=date&filter=shows");
+        if (!empty($response)) {
+            $html = HtmlDomParser::str_get_html($response);
+            $pageTitle = $this->cleanString($html->find('title', 0)->text());
+            $pageTitle = trim(str_replace('- Metacritic', '', $pageTitle));
+        }
+
+        if (empty($pageTitle)) {
+            $error = 500;
+        } else if ($pageTitle == 'Page Not Found'
             or strpos($pageTitle, 'Not Found') !== false
             or $html->findOneOrFalse('.c-error404')) {
             $error = 404;
@@ -254,33 +260,39 @@ class Metacritic extends Base
         } else {
             $output['name'] = $pageTitle;
 
-            $response = $this->getContentPage("https://internal-prod.apigee.fandom.net/v1/xapi/people/metacritic/" . $output['url_slug'] . "/credits/web?apiKey=1MOZgmNFxvmljaQR1X9KAij9Mo4xAY3u&componentName=profile&componentDisplayName=Person%20Profile&componentType=Profile&productType=movie&sort=date");
-            $html = HtmlDomParser::str_get_html($response);
             try {
+                $response = $this->getContentPage("https://internal-prod.apigee.fandom.net/v1/xapi/people/metacritic/" . $output['url_slug'] . "/credits/web?apiKey=1MOZgmNFxvmljaQR1X9KAij9Mo4xAY3u&componentName=profile&componentDisplayName=Person%20Profile&componentType=Profile&productType=movie&sort=date");
+                $html = HtmlDomParser::str_get_html($response);
+
                 $scoreDetailsJson = json_decode($html);
-                foreach ($scoreDetailsJson->data->items as $e) {
-                    $output['movies'][] = [
-                        'title' => $this->cleanString($e->product->title),
-                        'url' => $this->baseUrl . rtrim($e->product->url, '/'),
-                        'url_slug' => $this->afterLast(rtrim($e->product->url, '/')),
-                        'year' => ((int)$e->product->releaseYear) ?: null
-                    ];
+                if (isset($scoreDetailsJson->data->items)) {
+                    foreach ($scoreDetailsJson->data->items as $e) {
+                        $output['movies'][] = [
+                            'title' => $this->cleanString($e->product->title),
+                            'url' => $this->baseUrl . rtrim($e->product->url, '/'),
+                            'url_slug' => $this->afterLast(rtrim($e->product->url, '/')),
+                            'year' => ((int)$e->product->releaseYear) ?: null
+                        ];
+                    }
                 }
             } catch (Exception $exception) {
                 $output['movies'] = [];
             }
 
-            $response = $this->getContentPage("https://internal-prod.apigee.fandom.net/v1/xapi/people/metacritic/" . $output['url_slug'] . "/credits/web?apiKey=1MOZgmNFxvmljaQR1X9KAij9Mo4xAY3u&componentName=profile&componentDisplayName=Person%20Profile&componentType=Profile&productType=show&sort=date");
-            $html = HtmlDomParser::str_get_html($response);
             try {
+                $response = $this->getContentPage("https://internal-prod.apigee.fandom.net/v1/xapi/people/metacritic/" . $output['url_slug'] . "/credits/web?apiKey=1MOZgmNFxvmljaQR1X9KAij9Mo4xAY3u&componentName=profile&componentDisplayName=Person%20Profile&componentType=Profile&productType=show&sort=date");
+                $html = HtmlDomParser::str_get_html($response);
+
                 $scoreDetailsJson = json_decode($html);
-                foreach ($scoreDetailsJson->data->items as $e) {
-                    $output['series'][] = [
-                        'title' => $this->cleanString($e->product->title),
-                        'url' => $this->baseUrl . rtrim($e->product->url, '/'),
-                        'url_slug' => $this->afterLast(rtrim($e->product->url, '/')),
-                        'year' => ((int)$e->product->releaseYear) ?: null
-                    ];
+                if (isset($scoreDetailsJson->data->items)) {
+                    foreach ($scoreDetailsJson->data->items as $e) {
+                        $output['series'][] = [
+                            'title' => $this->cleanString($e->product->title),
+                            'url' => $this->baseUrl . rtrim($e->product->url, '/'),
+                            'url_slug' => $this->afterLast(rtrim($e->product->url, '/')),
+                            'year' => ((int)$e->product->releaseYear) ?: null
+                        ];
+                    }
                 }
             } catch (Exception $exception) {
                 $output['series'] = [];
