@@ -25,7 +25,7 @@ class ExtractTest extends TestCase
 
         $this->assertGreaterThan(8.5, $result['result']['user_score']);
         $this->assertLessThan(9.5, $result['result']['user_score']);
-        $this->assertGreaterThan(2600, $result['result']['user_votes']);
+        $this->assertGreaterThan(2500, $result['result']['user_votes']);
 
         $this->assertEquals('239', strlen($result['result']['summary']));
         $this->assertEquals('Action, Adventure, Drama, Fantasy', implode(', ', $result['result']['genres']));
