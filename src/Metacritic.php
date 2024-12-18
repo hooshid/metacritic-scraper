@@ -34,7 +34,7 @@ class Metacritic extends Base
             $mcoTypeId = 3;
         }
 
-        $response = $this->getContentPage("https://internal-prod.apigee.fandom.net/v1/xapi/finder/metacritic/search/" . urlencode($search) . "/web?apiKey=1MOZgmNFxvmljaQR1X9KAij9Mo4xAY3u&offset=" . ($page * 100) . "&limit=100&componentName=search&componentDisplayName=Search&componentType=SearchResults&sortDirection=DESC&mcoTypeId=" . $mcoTypeId);
+        $response = $this->getContentPage("https://backend.metacritic.com/v1/xapi/finder/metacritic/search/" . urlencode($search) . "/web?apiKey=1MOZgmNFxvmljaQR1X9KAij9Mo4xAY3u&offset=" . ($page * 100) . "&limit=100&componentName=search&componentDisplayName=Search&componentType=SearchResults&sortDirection=DESC&mcoTypeId=" . $mcoTypeId);
         $html = HtmlDomParser::str_get_html($response);
         $last_page = 0;
         $output = [];
@@ -261,7 +261,7 @@ class Metacritic extends Base
             $output['name'] = $pageTitle;
 
             try {
-                $response = $this->getContentPage("https://internal-prod.apigee.fandom.net/v1/xapi/people/metacritic/" . $output['url_slug'] . "/credits/web?apiKey=1MOZgmNFxvmljaQR1X9KAij9Mo4xAY3u&componentName=profile&componentDisplayName=Person%20Profile&componentType=Profile&productType=movie&sort=date");
+                $response = $this->getContentPage("https://backend.metacritic.com/people/metacritic/" . $output['url_slug'] . "/credits/web?apiKey=1MOZgmNFxvmljaQR1X9KAij9Mo4xAY3u&componentName=profile&componentDisplayName=Person+Profile&componentType=Profile&productType=movie&sort=date");
                 $html = HtmlDomParser::str_get_html($response);
 
                 $scoreDetailsJson = json_decode($html);
@@ -280,7 +280,7 @@ class Metacritic extends Base
             }
 
             try {
-                $response = $this->getContentPage("https://internal-prod.apigee.fandom.net/v1/xapi/people/metacritic/" . $output['url_slug'] . "/credits/web?apiKey=1MOZgmNFxvmljaQR1X9KAij9Mo4xAY3u&componentName=profile&componentDisplayName=Person%20Profile&componentType=Profile&productType=show&sort=date");
+                $response = $this->getContentPage("https://backend.metacritic.com/people/metacritic/" . $output['url_slug'] . "/credits/web?apiKey=1MOZgmNFxvmljaQR1X9KAij9Mo4xAY3u&componentName=profile&componentDisplayName=Person+Profile&componentType=Profile&productType=show&sort=date");
                 $html = HtmlDomParser::str_get_html($response);
 
                 $scoreDetailsJson = json_decode($html);
