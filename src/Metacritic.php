@@ -238,8 +238,10 @@ class Metacritic extends Base
         $response = $this->getContentPage($this->baseUrl . $url . "/?sort-options=date&filter=shows");
         if (!empty($response)) {
             $html = HtmlDomParser::str_get_html($response);
-            $pageTitle = $this->cleanString($html->find('title', 0)->text());
-            $pageTitle = trim(str_replace('- Metacritic', '', $pageTitle));
+            if ($response != "403 Forbidden" and $html->findOneOrFalse('title')) {
+                $pageTitle = $this->cleanString($html->find('title', 0)->text());
+                $pageTitle = trim(str_replace('- Metacritic', '', $pageTitle));
+            }
         }
 
         if (empty($pageTitle)) {
