@@ -221,7 +221,7 @@ class Metacritic extends Base
      */
     public function person($url): array
     {
-        if (!strpos($url, 'person')) {
+        if (strpos($url, '/person') !== 0 || strpos($url, 'person') !== 0) {
             $url = "/person/" . $url;
         }
 
