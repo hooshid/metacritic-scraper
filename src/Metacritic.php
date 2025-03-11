@@ -97,7 +97,7 @@ class Metacritic extends Base
             $error = 404;
         } else if ($pageTitle == 'Service Unavailable'
             or strpos($pageTitle, 'Service Unavailable') !== false
-            or strpos($pageTitle, 'Error') !== false
+            or $pageTitle == 'Error'
             or $html->findOneOrFalse('.error_title')
             or $html->findOneOrFalse('.c-error503')) {
             $error = 503;
