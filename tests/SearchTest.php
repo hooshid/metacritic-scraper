@@ -1,13 +1,15 @@
 <?php
 
+use Hooshid\MetacriticScraper\Metacritic;
 use PHPUnit\Framework\TestCase;
 
 class SearchTest extends TestCase
 {
     public function testSearchMovie()
     {
-        $search = new \Hooshid\MetacriticScraper\Metacritic();
-        $result = $search->search('Black Panther');
+        $metacritic = new Metacritic();
+        $result = $metacritic->search('Black Panther');
+
         $this->assertIsArray($result);
         $this->assertCount(100, $result['results']);
 
@@ -26,8 +28,9 @@ class SearchTest extends TestCase
 
     public function testSearchTV()
     {
-        $search = new \Hooshid\MetacriticScraper\Metacritic();
-        $result = $search->search('Game of Thrones');
+        $metacritic = new Metacritic();
+        $result = $metacritic->search('Game of Thrones');
+
         $this->assertIsArray($result);
         $this->assertCount(100, $result['results']);
 

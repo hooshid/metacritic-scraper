@@ -1,13 +1,15 @@
 <?php
 
+use Hooshid\MetacriticScraper\Metacritic;
 use PHPUnit\Framework\TestCase;
 
 class ExtractTest extends TestCase
 {
     public function testExtractMovie()
     {
-        $search = new \Hooshid\MetacriticScraper\Metacritic();
-        $result = $search->extract('/movie/the-lord-of-the-rings-the-fellowship-of-the-ring');
+        $metacritic = new Metacritic();
+        $result = $metacritic->extract('/movie/the-lord-of-the-rings-the-fellowship-of-the-ring');
+
         $this->assertIsArray($result);
         $this->assertCount(17, $result['result']);
 
@@ -47,8 +49,9 @@ class ExtractTest extends TestCase
 
     public function testExtractTV()
     {
-        $search = new \Hooshid\MetacriticScraper\Metacritic();
-        $result = $search->extract('/tv/breaking-bad');
+        $metacritic = new Metacritic();
+        $result = $metacritic->extract('/tv/breaking-bad');
+
         $this->assertIsArray($result);
         $this->assertCount(17, $result['result']);
 
@@ -86,10 +89,11 @@ class ExtractTest extends TestCase
         $this->assertNull($result['error']);
     }
 
-    public function testMovieNotFound()
+    public function testPageNotFound()
     {
-        $search = new \Hooshid\MetacriticScraper\Metacritic();
-        $result = $search->extract('/movie/not-found');
+        $metacritic = new Metacritic();
+        $result = $metacritic->extract('/movie/not-found');
+
         $this->assertIsArray($result);
         $this->assertCount(3, $result['result']);
 
