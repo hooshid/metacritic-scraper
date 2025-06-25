@@ -34,7 +34,7 @@ class Metacritic extends Base
             $mcoTypeId = 3;
         }
 
-        $response = $this->getContentPage("https://backend.metacritic.com/v1/xapi/finder/metacritic/search/" . urlencode($search) . "/web?apiKey=1MOZgmNFxvmljaQR1X9KAij9Mo4xAY3u&offset=" . ($page * 100) . "&limit=100&componentName=search&componentDisplayName=Search&componentType=SearchResults&sortDirection=DESC&mcoTypeId=" . $mcoTypeId);
+        $response = $this->getContentPage("https://backend.metacritic.com/finder/metacritic/search/" . urlencode($search) . "/web?apiKey=1MOZgmNFxvmljaQR1X9KAij9Mo4xAY3u&offset=" . ($page * 100) . "&limit=100&componentName=search&componentDisplayName=Search&componentType=SearchResults&sortDirection=DESC&mcoTypeId=" . $mcoTypeId);
         $html = HtmlDomParser::str_get_html($response);
         $last_page = 0;
         $output = [];
