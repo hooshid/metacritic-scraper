@@ -1,13 +1,15 @@
 <?php
 
+use Hooshid\MetacriticScraper\Metacritic;
 use PHPUnit\Framework\TestCase;
 
 class PersonTest extends TestCase
 {
     public function testPerson()
     {
-        $search = new \Hooshid\MetacriticScraper\Metacritic();
-        $result = $search->person('tom-cruise');
+        $metacritic = new Metacritic();
+        $result = $metacritic->person('tom-cruise');
+
         $this->assertIsArray($result);
         $this->assertCount(5, $result['result']);
 
@@ -40,8 +42,9 @@ class PersonTest extends TestCase
 
     public function testPersonNotFound()
     {
-        $search = new \Hooshid\MetacriticScraper\Metacritic();
-        $result = $search->person('not-found');
+        $metacritic = new Metacritic();
+        $result = $metacritic->person('not-found');
+
         $this->assertIsArray($result);
         $this->assertCount(5, $result['result']);
 

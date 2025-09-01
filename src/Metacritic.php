@@ -97,7 +97,7 @@ class Metacritic extends Base
             $error = 404;
         } else if ($pageTitle == 'Service Unavailable'
             or strpos($pageTitle, 'Service Unavailable') !== false
-            or strpos($pageTitle, 'Error') !== false
+            or $pageTitle == 'Error'
             or $html->findOneOrFalse('.error_title')
             or $html->findOneOrFalse('.c-error503')) {
             $error = 503;
@@ -288,8 +288,13 @@ class Metacritic extends Base
                 $scoreDetailsJson = json_decode($html);
                 if (isset($scoreDetailsJson->data->items)) {
                     foreach ($scoreDetailsJson->data->items as $e) {
+                        $title = $this->cleanString($e->product->title);
+                        preg_match('/\((\d{4})\)/', $title, $matches);
+                        $titleYear = isset($matches[1]) ? (int)$matches[1] : null;
+                        $title = trim(str_replace(" ($titleYear)","",$title));
+
                         $output['series'][] = [
-                            'title' => $this->cleanString($e->product->title),
+                            'title' => $title,
                             'url' => $this->baseUrl . rtrim($e->product->url, '/'),
                             'url_slug' => $this->afterLast(rtrim($e->product->url, '/')),
                             'year' => ((int)$e->product->releaseYear) ?: null
