@@ -8,39 +8,39 @@ use voku\helper\HtmlDomParser;
 
 class Metacritic extends Base
 {
-
     /**
      * Search on metacritic
      *
-     * @param $search
+     * @param string $search
      * @param int $page
      * @param string $type
-     * @return array|string
+     * @return array
+     * @throws Exception
      */
-    public function search($search, int $page = 0, string $type = 'all')
+    public function search(string $search, int $page = 0, string $type = 'all'): array
     {
         if (!in_array($type, $this->searchTypes)) {
-            return 'Type can be one of this: ' . implode(", ", $this->searchTypes);
+            throw new Exception("Type can be one of: " . implode(", ", $this->searchTypes));
         }
 
         $search = str_replace("/", " ", $search);
-
-        $mcoTypeId = null;
-        if ($type == "movie") {
-            $mcoTypeId = 2;
-        } elseif ($type == "tv") {
-            $mcoTypeId = 1;
-        } elseif ($type == "person") {
-            $mcoTypeId = 3;
-        }
+        $mcoTypeId = match ($type) {
+            "movie" => 2,
+            "tv" => 1,
+            "person" => 3,
+            default => null
+        };
 
         $response = $this->getContentPage("https://backend.metacritic.com/finder/metacritic/search/" . urlencode($search) . "/web?apiKey=1MOZgmNFxvmljaQR1X9KAij9Mo4xAY3u&offset=" . ($page * 100) . "&limit=100&componentName=search&componentDisplayName=Search&componentType=SearchResults&sortDirection=DESC&mcoTypeId=" . $mcoTypeId);
         $html = HtmlDomParser::str_get_html($response);
+
         $last_page = 0;
         $output = [];
+
         try {
             $resultJson = json_decode($html);
             $last_page = $resultJson->links->last->meta->pageNum;
+
             foreach ($resultJson->data->items as $e) {
                 $url = '/' . $this->getType($e->type) . '/' . $e->slug;
                 $output[] = [
@@ -74,10 +74,10 @@ class Metacritic extends Base
     /**
      * Extract data from movie or tv page
      *
-     * @param $url
+     * @param string $url
      * @return array
      */
-    public function extract($url): array
+    public function extract(string $url): array
     {
         $url = str_replace("https://www.metacritic.com", "", $url);
         $response = $this->getContentPage($this->baseUrl . $url);
@@ -92,11 +92,11 @@ class Metacritic extends Base
         $output['url_slug'] = $this->afterLast($url);
 
         if ($pageTitle == 'Page Not Found'
-            or strpos($pageTitle, 'Not Found') !== false
+            or str_contains($pageTitle, 'Not Found')
             or $html->findOneOrFalse('.c-error404')) {
             $error = 404;
         } else if ($pageTitle == 'Service Unavailable'
-            or strpos($pageTitle, 'Service Unavailable') !== false
+            or str_contains($pageTitle, 'Service Unavailable')
             or $pageTitle == 'Error'
             or $html->findOneOrFalse('.error_title')
             or $html->findOneOrFalse('.c-error503')) {
@@ -132,7 +132,7 @@ class Metacritic extends Base
                         $thumbnail = null;
                     }
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
 
             }
 
@@ -216,12 +216,12 @@ class Metacritic extends Base
     /**
      * Extract person data (actor, director and ...)
      *
-     * @param $url
+     * @param string $url
      * @return array
      */
-    public function person($url): array
+    public function person(string $url): array
     {
-        if (strpos($url, '/person') !== 0 || strpos($url, 'person') !== 0) {
+        if (!str_starts_with($url, '/person') || !str_starts_with($url, 'person')) {
             $url = "/person/" . $url;
         }
 
@@ -247,15 +247,15 @@ class Metacritic extends Base
         if (empty($pageTitle)) {
             $error = 500;
         } else if ($pageTitle == 'Page Not Found'
-            or strpos($pageTitle, 'Not Found') !== false
+            or str_contains($pageTitle, 'Not Found')
             or $html->findOneOrFalse('.c-error404')) {
             $error = 404;
         } else if ($pageTitle == 'Service Unavailable'
             or trim($pageTitle) == ''
             or trim($pageTitle) == '- Metacritic'
             or trim($pageTitle) == 'Metacritic'
-            or strpos($pageTitle, 'Service Unavailable') !== false
-            or strpos($pageTitle, 'Error') !== false
+            or str_contains($pageTitle, 'Service Unavailable')
+            or str_contains($pageTitle, 'Error')
             or $html->findOneOrFalse('.error_title')
             or $html->findOneOrFalse('.c-error503')) {
             $error = 503;
@@ -263,45 +263,87 @@ class Metacritic extends Base
             $output['name'] = $pageTitle;
 
             try {
-                $response = $this->getContentPage("https://backend.metacritic.com/people/metacritic/" . $output['url_slug'] . "/credits/web?apiKey=1MOZgmNFxvmljaQR1X9KAij9Mo4xAY3u&componentName=profile&componentDisplayName=Person+Profile&componentType=Profile&productType=movie&sort=date");
-                $html = HtmlDomParser::str_get_html($response);
+                $url = "https://backend.metacritic.com/people/metacritic/" . $output['url_slug'] . "/credits/web?" .
+                    "apiKey=1MOZgmNFxvmljaQR1X9KAij9Mo4xAY3u&" .
+                    "componentName=profile&componentDisplayName=Person+Profile&componentType=Profile&" .
+                    "productType=movie&sort=date";
 
-                $scoreDetailsJson = json_decode($html);
-                if (isset($scoreDetailsJson->data->items)) {
-                    foreach ($scoreDetailsJson->data->items as $e) {
-                        $output['movies'][] = [
-                            'title' => $this->cleanString($e->product->title),
-                            'url' => $this->baseUrl . rtrim($e->product->url, '/'),
-                            'url_slug' => $this->afterLast(rtrim($e->product->url, '/')),
-                            'year' => ((int)$e->product->releaseYear) ?: null
-                        ];
+                for ($page = 0; $page < 25; $page++) {
+                    $response = $this->getContentPage($url);
+                    $html = HtmlDomParser::str_get_html($response);
+
+                    $scoreDetailsJson = json_decode($html);
+
+                    if (!isset($scoreDetailsJson->data->items) || empty($scoreDetailsJson->data->items)) {
+                        break;
                     }
+
+                    if (isset($scoreDetailsJson->data->items)) {
+                        foreach ($scoreDetailsJson->data->items as $e) {
+                            $output['movies'][] = [
+                                'title' => $this->cleanString($e->product->title),
+                                'url' => $this->baseUrl . rtrim($e->product->url, '/'),
+                                'url_slug' => $this->afterLast(rtrim($e->product->url, '/')),
+                                'year' => ((int)$e->product->releaseYear) ?: null
+                            ];
+                        }
+                    }
+
+                    // Check if there's a next page
+                    if (!isset($scoreDetailsJson->links->next) || !isset($scoreDetailsJson->links->next->href)) {
+                        break;
+                    }
+
+                    $url = $scoreDetailsJson->links->next->href;
+
+                    sleep(1);
                 }
             } catch (Exception $exception) {
                 $output['movies'] = [];
             }
 
             try {
-                $response = $this->getContentPage("https://backend.metacritic.com/people/metacritic/" . $output['url_slug'] . "/credits/web?apiKey=1MOZgmNFxvmljaQR1X9KAij9Mo4xAY3u&componentName=profile&componentDisplayName=Person+Profile&componentType=Profile&productType=show&sort=date");
-                $html = HtmlDomParser::str_get_html($response);
+                $url = "https://backend.metacritic.com/people/metacritic/" . $output['url_slug'] . "/credits/web?" .
+                    "apiKey=1MOZgmNFxvmljaQR1X9KAij9Mo4xAY3u&" .
+                    "componentName=profile&componentDisplayName=Person+Profile&componentType=Profile&" .
+                    "productType=show&sort=date";
 
-                $scoreDetailsJson = json_decode($html);
-                if (isset($scoreDetailsJson->data->items)) {
-                    foreach ($scoreDetailsJson->data->items as $e) {
-                        $title = $this->cleanString($e->product->title);
-                        preg_match('/\((\d{4})\)/', $title, $matches);
-                        $titleYear = isset($matches[1]) ? (int)$matches[1] : null;
-                        $title = trim(str_replace(" ($titleYear)","",$title));
+                for ($page = 0; $page < 25; $page++) {
+                    $response = $this->getContentPage($url);
+                    $html = HtmlDomParser::str_get_html($response);
 
-                        $output['series'][] = [
-                            'title' => $title,
-                            'url' => $this->baseUrl . rtrim($e->product->url, '/'),
-                            'url_slug' => $this->afterLast(rtrim($e->product->url, '/')),
-                            'year' => ((int)$e->product->releaseYear) ?: null
-                        ];
+                    $scoreDetailsJson = json_decode($html);
+
+                    if (!isset($scoreDetailsJson->data->items) || empty($scoreDetailsJson->data->items)) {
+                        break;
                     }
+
+                    if (isset($scoreDetailsJson->data->items)) {
+                        foreach ($scoreDetailsJson->data->items as $e) {
+                            $title = $this->cleanString($e->product->title);
+                            preg_match('/\((\d{4})\)/', $title, $matches);
+                            $titleYear = isset($matches[1]) ? (int)$matches[1] : null;
+                            $title = trim(str_replace(" ($titleYear)", "", $title));
+
+                            $output['series'][] = [
+                                'title' => $title,
+                                'url' => $this->baseUrl . rtrim($e->product->url, '/'),
+                                'url_slug' => $this->afterLast(rtrim($e->product->url, '/')),
+                                'year' => ((int)$e->product->releaseYear) ?: null
+                            ];
+                        }
+                    }
+
+                    // Check if there's a next page
+                    if (!isset($scoreDetailsJson->links->next) || !isset($scoreDetailsJson->links->next->href)) {
+                        break;
+                    }
+
+                    $url = $scoreDetailsJson->links->next->href;
+
+                    sleep(1);
                 }
-            } catch (Exception $exception) {
+            } catch (Exception) {
                 $output['series'] = [];
             }
         }
@@ -311,5 +353,4 @@ class Metacritic extends Base
             'error' => $error
         ];
     }
-
 }

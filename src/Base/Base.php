@@ -1,22 +1,20 @@
 <?php
 
-
 namespace Hooshid\MetacriticScraper\Base;
-
 
 class Base
 {
-    protected $baseUrl = 'https://www.metacritic.com';
+    protected string $baseUrl = 'https://www.metacritic.com';
 
-    protected $searchTypes = ['all', 'movie', 'tv', 'person'];
+    protected array $searchTypes = ['all', 'movie', 'tv', 'person'];
 
     /**
      * Get html content
      *
-     * @param $url
+     * @param string $url
      * @return bool|string
      */
-    protected function getContentPage($url)
+    protected function getContentPage(string $url): bool|string
     {
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_ENCODING, "");
@@ -32,11 +30,11 @@ class Base
     /**
      * Clean string from html tags
      *
-     * @param $str
+     * @param string|null $str
      * @param null $remove
      * @return string|null
      */
-    protected function cleanString($str, $remove = null): ?string
+    protected function cleanString(string|null $str, $remove = null): ?string
     {
         if (empty($str)) {
             return null;
@@ -62,38 +60,22 @@ class Base
     /**
      * get value after last specific char
      *
-     * @param $str
+     * @param string $str
      * @param string $needle
      * @return string
      */
-    protected function afterLast($str, string $needle = '/'): string
+    protected function afterLast(string $str, string $needle = '/'): string
     {
         return substr($str, strrpos($str, $needle) + 1);
     }
 
     /**
-     * get value before last specific char
-     *
-     * @param $str
-     * @param string $needle
-     * @return string
-     */
-    protected function beforeLast($str, string $needle = '/'): string
-    {
-        $lastPos = strrpos($str, $needle);
-        if ($lastPos === false) {
-            return $str;
-        }
-        return substr($str, 0, $lastPos);
-    }
-
-    /**
      * extract numbers from string
      *
-     * @param $str
+     * @param string $str
      * @return int
      */
-    protected function getNumbers($str): int
+    protected function getNumbers(string $str): int
     {
         return (int)filter_var($str, FILTER_SANITIZE_NUMBER_INT);
     }
@@ -101,11 +83,10 @@ class Base
     /**
      * @return mixed|null
      */
-    protected function jsonLD($html)
+    protected function jsonLD($html): mixed
     {
         if (empty($html)) return [];
         preg_match('#<script data-n-head="ssr" charset="UTF-8" type="application/ld\+json" data-hid="ld\+json">(.+?)</script>#ims', $html, $matches);
-        //preg_match('#<script type="application/ld\+json">(.+?)</script>#ims', $html, $matches);
         if (empty($matches[1])) return [];
         return json_decode($matches[1]);
     }
@@ -113,10 +94,10 @@ class Base
     /**
      * get type of page or result
      *
-     * @param $type
+     * @param string $type
      * @return string|null
      */
-    protected function getType($type): ?string
+    protected function getType(string $type): ?string
     {
         if ($type == "show") {
             return "tv";
@@ -138,30 +119,10 @@ class Base
     /**
      * Helper function for get meta score class
      *
-     * @param $str
+     * @param int|null $score
      * @return string
      */
-    protected function getScoreClass($str): string
-    {
-        if (stripos($str, "positive") !== false) {
-            return "positive";
-        } elseif (stripos($str, "mixed") !== false) {
-            return "mixed";
-        } elseif (stripos($str, "negative") !== false) {
-            return "negative";
-        }
-
-        return "tbd";
-    }
-
-
-    /**
-     * Helper function for get meta score class
-     *
-     * @param $score
-     * @return string
-     */
-    protected function getScoreClassByScore($score): string
+    protected function getScoreClassByScore(?int $score): string
     {
         if ($score >= 61) {
             return "positive";
@@ -173,5 +134,4 @@ class Base
 
         return "tbd";
     }
-
 }
