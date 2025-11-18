@@ -45,6 +45,7 @@
 
             <a href="/example/extract.php?url=/tv/game-of-thrones">TV Series - Game of Thrones</a>
             <a href="/example/extract.php?url=/tv/house-of-the-dragon">TV Series - House of the Dragon</a>
+            <a href="/example/extract.php?url=/tv/pluribus">TV Series - Pluribus</a>
 
             <a href="/example/person.php?url=tom-cruise">Person - Tom Cruise</a>
             <a href="/example/person.php?url=keanu-reeves">Person - Keanu Reeves</a>
