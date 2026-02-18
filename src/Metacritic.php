@@ -140,6 +140,12 @@ class Metacritic extends Base
             $userScore = $this->cleanString($html->find('.c-productHero_scoreInfo > .c-productScoreInfo .c-siteReviewScore span', 0)->text());
             $userScoreVotesCount = $this->cleanString($html->find('.c-productHero_scoreInfo > .c-productScoreInfo .c-productScoreInfo_reviewsTotal span', 0)->text());
 
+            if (empty($userScore)) {
+                $mustSee = $html->findOneOrFalse('.score-wrapper--badge-and-score .c-global-image__img');
+                $userScore = $this->cleanString($html->find('.hero-scores__preview .c-siteReviewScore_background-user span', 0)->text());
+                $userScoreVotesCount = $this->cleanString($html->find('.hero-scores__preview [data-testid="user-reviews-link"]', 0)->text());
+            }
+
             $output['title'] = $title;
             $output['thumbnail'] = $thumbnail;
             $output['release_year'] = $releaseYear;

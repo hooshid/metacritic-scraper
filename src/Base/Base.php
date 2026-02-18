@@ -18,6 +18,8 @@ class Base
     {
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_ENCODING, "");
+        curl_setopt($ch, CURLOPT_TIMEOUT, 45);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 45);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // follow redirects
         curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.4472.124 Safari/537.36");
@@ -87,6 +89,9 @@ class Base
     {
         if (empty($html)) return [];
         preg_match('#<script data-n-head="ssr" charset="UTF-8" type="application/ld\+json" data-hid="ld\+json">(.+?)</script>#ims', $html, $matches);
+        if (empty($matches[1])) {
+            preg_match('#<script type="application/ld\+json">(.+?)</script>#ims', $html, $matches);
+        };
         if (empty($matches[1])) return [];
         return json_decode($matches[1]);
     }
