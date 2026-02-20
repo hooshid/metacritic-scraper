@@ -140,8 +140,18 @@ class Metacritic extends Base
             $userScore = $this->cleanString($html->find('.c-productHero_scoreInfo > .c-productScoreInfo .c-siteReviewScore span', 0)->text());
             $userScoreVotesCount = $this->cleanString($html->find('.c-productHero_scoreInfo > .c-productScoreInfo .c-productScoreInfo_reviewsTotal span', 0)->text());
 
+            if (empty($mustSee)) {
+                $mustSee = $html->findOneOrFalse('.product-hero__scores img[alt="must-watch"]');
+                if (empty($mustSee)) {
+                    try {
+                        $badgeImg = $html->find('.hero-scores__preview .score-badge__image img', 0);
+                        $mustSee = isset($badgeImg->src) && str_ends_with($badgeImg->src, 'must-watch.svg');
+                    } catch (Exception) {
+                    }
+                }
+            }
+
             if (empty($userScore)) {
-                $mustSee = $html->findOneOrFalse('.score-wrapper--badge-and-score .c-global-image__img');
                 $userScore = $this->cleanString($html->find('.hero-scores__preview .c-siteReviewScore_background-user span', 0)->text());
                 $userScoreVotesCount = $this->cleanString($html->find('.hero-scores__preview [data-testid="user-reviews-link"]', 0)->text());
             }
