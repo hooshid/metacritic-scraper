@@ -43,6 +43,7 @@ if (isset($_GET["output"])) {
         <div class="flex-container">
             <div class="col-25 menu-links">
                 <div class="menu-links-title">Movies</div>
+                <a href="extract.php?url=/movie/the-boy-and-the-heron">The Boy and the Heron (2023)</a>
                 <a href="extract.php?url=/movie/the-godfather">The Godfather (1972)</a>
                 <a href="extract.php?url=/movie/the-matrix">The Matrix (1999)</a>
                 <a href="extract.php?url=/movie/the-father">The Father (2021)</a>
@@ -51,6 +52,7 @@ if (isset($_GET["output"])) {
                 <a href="extract.php?url=/tv/game-of-thrones">Game of Thrones</a>
                 <a href="extract.php?url=/tv/breaking-bad">Breaking Bad</a>
                 <a href="extract.php?url=/tv/chernobyl">Chernobyl</a>
+                <a href="extract.php?url=/tv/pluribus">Pluribus</a>
             </div>
 
             <div class="col-75">
