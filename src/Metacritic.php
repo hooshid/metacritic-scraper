@@ -141,11 +141,23 @@ class Metacritic extends Base
             $userScoreVotesCount = $this->cleanString($html->find('.c-productHero_scoreInfo > .c-productScoreInfo .c-productScoreInfo_reviewsTotal span', 0)->text());
 
             if (empty($mustSee)) {
-                $mustSee = $html->findOneOrFalse('.product-hero__scores img[alt="must-watch"]');
+                $productHeroMustSee = $html->findOneOrFalse('.product-hero__scores img[alt="must-see"]');
+                if (!empty($productHeroMustSee)) {
+                    $mustSee = true;
+                }
+
+                $productHeroMustWatch = $html->findOneOrFalse('.product-hero__scores img[alt="must-watch"]');
+                if (!empty($productHeroMustWatch)) {
+                    $mustSee = true;
+                }
+
                 if (empty($mustSee)) {
                     try {
                         $badgeImg = $html->find('.hero-scores__preview .score-badge__image img', 0);
-                        $mustSee = isset($badgeImg->src) && str_ends_with($badgeImg->src, 'must-watch.svg');
+                        if (isset($badgeImg->src)
+                            && (str_ends_with($badgeImg->src, 'must-see.svg') || str_ends_with($badgeImg->src, 'must-watch.svg'))) {
+                            $mustSee = true;
+                        }
                     } catch (Exception) {
                     }
                 }
