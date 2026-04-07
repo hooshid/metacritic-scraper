@@ -168,6 +168,11 @@ class Metacritic extends Base
                 $userScoreVotesCount = $this->cleanString($html->find('.hero-scores__preview [data-testid="user-reviews-link"]', 0)->text());
             }
 
+            if (empty($userScore)) {
+                $userScore = $this->cleanString($html->find('.reviews .top-user-reviews-section .summary-header [data-testid="score-wrapper"] .c-siteReviewScore_background-user span', 0)->text());
+                $userScoreVotesCount = $this->cleanString($html->find('.reviews .top-user-reviews-section .summary-header [data-testid="score-wrapper"] .user-reviews-link', 0)->text());
+            }
+
             $output['title'] = $title;
             $output['thumbnail'] = $thumbnail;
             $output['release_year'] = $releaseYear;
