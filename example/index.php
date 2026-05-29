@@ -42,10 +42,12 @@
         <div class="menu-links">
             <a href="/example/extract.php?url=/movie/the-matrix">Movie - The Matrix (1999)</a>
             <a href="/example/extract.php?url=/movie/john-wick">Movie - John Wick (2014)</a>
+            <a href="/example/extract.php?url=/movie/the-lord-of-the-rings-the-fellowship-of-the-ring">Movie - The Lord of the Rings: The Fellowship of the Ring (2001)</a>
 
             <a href="/example/extract.php?url=/tv/game-of-thrones">TV Series - Game of Thrones</a>
             <a href="/example/extract.php?url=/tv/house-of-the-dragon">TV Series - House of the Dragon</a>
             <a href="/example/extract.php?url=/tv/pluribus">TV Series - Pluribus</a>
+            <a href="/example/extract.php?url=/tv/breaking-bad">TV Series - Breaking Bad</a>
 
             <a href="/example/person.php?url=tom-cruise">Person - Tom Cruise</a>
             <a href="/example/person.php?url=keanu-reeves">Person - Keanu Reeves</a>
