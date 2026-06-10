@@ -31,8 +31,12 @@ class Metacritic extends Base
             default => null
         };
 
-        $response = $this->getContentPage("https://backend.metacritic.com/finder/metacritic/search/" . urlencode($search) . "/web?apiKey=1MOZgmNFxvmljaQR1X9KAij9Mo4xAY3u&offset=" . ($page * 100) . "&limit=100&componentName=search&componentDisplayName=Search&componentType=SearchResults&sortDirection=DESC&mcoTypeId=" . $mcoTypeId);
-        $html = HtmlDomParser::str_get_html($response);
+        try {
+            $response = $this->getContentPage("https://backend.metacritic.com/finder/metacritic/search/" . urlencode($search) . "/web?apiKey=1MOZgmNFxvmljaQR1X9KAij9Mo4xAY3u&offset=" . ($page * 100) . "&limit=100&componentName=search&componentDisplayName=Search&componentType=SearchResults&sortDirection=DESC&mcoTypeId=" . $mcoTypeId);
+            $html = HtmlDomParser::str_get_html($response);
+        } catch (Exception $exception) {
+            throw new Exception($exception->getMessage());
+        }
 
         $last_page = 0;
         $output = [];
@@ -76,12 +80,18 @@ class Metacritic extends Base
      *
      * @param string $url
      * @return array
+     * @throws Exception
      */
     public function extract(string $url): array
     {
         $url = str_replace("https://www.metacritic.com", "", $url);
-        $response = $this->getContentPage($this->baseUrl . $url);
-        $html = HtmlDomParser::str_get_html($response);
+        try {
+            $response = $this->getContentPage($this->baseUrl . $url);
+            $html = HtmlDomParser::str_get_html($response);
+        } catch (Exception $exception) {
+            throw new Exception($exception->getMessage());
+        }
+
         $pageTitle = $this->cleanString($html->find('title', 0)->text());
         $pageTitle = trim(str_replace('- Metacritic', '', $pageTitle));
         $error = null;
@@ -256,6 +266,7 @@ class Metacritic extends Base
      *
      * @param string $url
      * @return array
+     * @throws Exception
      */
     public function person(string $url): array
     {
@@ -273,7 +284,12 @@ class Metacritic extends Base
         $error = null;
         $pageTitle = null;
 
-        $response = $this->getContentPage($this->baseUrl . $url . "/?sort-options=date&filter=shows");
+        try {
+            $response = $this->getContentPage($this->baseUrl . $url . "/?sort-options=date&filter=shows");
+        } catch (Exception $exception) {
+            throw new Exception($exception->getMessage());
+        }
+
         if (!empty($response)) {
             $html = HtmlDomParser::str_get_html($response);
             if ($response != "403 Forbidden" and $html->findOneOrFalse('title')) {
